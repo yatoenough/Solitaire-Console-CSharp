@@ -27,7 +27,7 @@ public class GameRenderer
                     {
                         var visibleIndex = row - hiddenCount;
                         var card = column.VisibleCards[visibleIndex];
-                        Console.Write($"{card}  ");
+                        Console.Write($"{card,-4}");
                     }
                 }
                 else
@@ -49,7 +49,7 @@ public class GameRenderer
             {
                 Card topCard = foundation.Peek();
                 topCard.IsShown = true;
-                Console.Write($"{topCard}  ");
+                Console.Write($"{topCard,-4}");
             }
             else
             {
@@ -74,7 +74,7 @@ public class GameRenderer
         
         foreach(var card in wastePile)
         {
-            Console.Write($"{card}  ");
+            Console.Write($"{card,-4}");
         }
         
         Console.WriteLine();

@@ -50,19 +50,28 @@ public class Game
     
     public void Start()
     {
+        DrawBoard();
+        NextMove();
+    }
+
+    public void NextMove()
+    {
+        switch (UserInputProvider.Get())
+        {
+            case 'd':
+                DrawFromStock();
+                DrawBoard();
+                NextMove();
+                break;
+        }
+    }
+
+    private void DrawBoard()
+    {
         Console.Clear();
         
         renderer.DisplayColumns(columns);
-
-        foundations[0].Push(stockPile.Peek());
-        foundations[1].Push(stockPile.Peek());
-        foundations[2].Push(stockPile.Peek());
-        foundations[3].Push(stockPile.Peek());
         renderer.DisplayFoundations(foundations);
-        
-        DrawFromStock();
-        DrawFromStock();
-        DrawFromStock();
         renderer.DisplayPiles(stockPile, wastePile);
     }
     
