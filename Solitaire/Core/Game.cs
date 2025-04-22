@@ -104,5 +104,6 @@ public class Game
             stockPile.Push(card);
         }
         
+        DrawFromStock();
     }
 }
