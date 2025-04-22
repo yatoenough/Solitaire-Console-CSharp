@@ -64,6 +64,10 @@ public class Game
                 DrawBoard();
                 NextMove();
                 break;
+            default:
+                DrawBoard();
+                NextMove();
+                break;
         }
     }
 
