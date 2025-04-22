@@ -82,16 +82,18 @@ public class Game
     
     private void DrawFromStock(int difficulty = 1)
     {
-        for (int i = 0; i < difficulty && stockPile.Count > 0; i++)
+        for (int i = 0; i < difficulty && stockPile.Count >= 0; i++)
         {
+            if(stockPile.Count == 0) break;
+            
             Card card = stockPile.Pop();
             card.IsShown = true;
             wastePile.Push(card);
+            
+            return;
         }
-
-        if (stockPile.Count != 0) return;
         
-        var tmp = wastePile.Reverse().ToList();
+        var tmp = wastePile.ToList();
         tmp.Shuffle();
         
         wastePile.Clear();

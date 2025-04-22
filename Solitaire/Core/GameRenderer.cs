@@ -64,10 +64,7 @@ public class GameRenderer
     {
         Console.ForegroundColor = ConsoleColor.White;
 
-        if(stockPile.Count > 0)
-        {
-            Console.Write($"Kart w stosie rezerwowym: {stockPile.Count}  ");
-        }
+        Console.Write($"Kart w stosie rezerwowym: {stockPile.Count}  ");
         
         Console.WriteLine("\n");
         Console.Write("Dobrane karty: ");
