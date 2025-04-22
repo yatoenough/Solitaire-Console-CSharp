@@ -10,9 +10,8 @@ public class GameRenderer
 
         for (int row = 0; row < maxHeight; row++)
         {
-            for (int col = 0; col < columns.Count; col++)
+            foreach (var column in columns)
             {
-                var column = columns[col];
                 int hiddenCount = column.HiddenCards.Count;
                 int visibleCount = column.VisibleCards.Count;
                 int totalCount = hiddenCount + visibleCount;
@@ -21,13 +20,14 @@ public class GameRenderer
                 {
                     if (row < hiddenCount)
                     {
+                        Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("XX  ");
                     }
                     else
                     {
                         var visibleIndex = row - hiddenCount;
                         var card = column.VisibleCards[visibleIndex];
-                        Console.Write($"{card,-4}");
+                        Console.Write($"{card}  ");
                     }
                 }
                 else
@@ -35,7 +35,48 @@ public class GameRenderer
                     Console.Write("    ");
                 }
             }
+
             Console.WriteLine();
         }
+    }
+
+    public void DisplayFoundations(List<Stack<Card>> foundations)
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        foreach (var foundation in foundations)
+        {
+            if (foundation.Count > 0)
+            {
+                Card topCard = foundation.Peek();
+                topCard.IsShown = true;
+                Console.Write($"{topCard}  ");
+            }
+            else
+            {
+                Console.Write("    ");
+            }
+        }
+        
+        Console.WriteLine();
+    }
+
+    public void DisplayPiles(Stack<Card> stockPile, Stack<Card> wastePile)
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+
+        if(stockPile.Count > 0)
+        {
+            Console.Write($"Kart w stosie rezerwowym: {stockPile.Count}  ");
+        }
+        
+        Console.WriteLine("\n");
+        Console.Write("Dobrane karty: ");
+        
+        foreach(var card in wastePile)
+        {
+            Console.Write($"{card}  ");
+        }
+        
+        Console.WriteLine();
     }
 }

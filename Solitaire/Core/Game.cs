@@ -50,7 +50,20 @@ public class Game
     
     public void Start()
     {
+        Console.Clear();
+        
         renderer.DisplayColumns(columns);
+
+        foundations[0].Push(stockPile.Peek());
+        foundations[1].Push(stockPile.Peek());
+        foundations[2].Push(stockPile.Peek());
+        foundations[3].Push(stockPile.Peek());
+        renderer.DisplayFoundations(foundations);
+        
+        DrawFromStock();
+        DrawFromStock();
+        DrawFromStock();
+        renderer.DisplayPiles(stockPile, wastePile);
     }
     
     private void DrawFromStock(int difficulty = 1)
