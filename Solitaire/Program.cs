@@ -1,5 +1,4 @@
 ﻿using Solitaire.Core;
-using Solitaire.Core.Models;
 
 namespace Solitaire;
 
