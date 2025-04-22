@@ -8,7 +8,7 @@ public class Deck
     {
         foreach (Suit suit in Enum.GetValues(typeof(Suit)))
         {
-            for (int i = 0; i <= 13; i++)
+            for (int i = 1; i <= 13; i++)
             {
                 _cards.Add(new Card(i, suit));
             }
@@ -30,5 +30,7 @@ public class Deck
         
         return card;
     }
+    
+    public int Count => _cards.Count;
 
 }
