@@ -9,6 +9,7 @@ public class Game
     private List<Stack<Card>> foundations = new List<Stack<Card>>();
     private Stack<Card> stockPile = new Stack<Card>();
     private Stack<Card> wastePile = new Stack<Card>();
+    private GameRenderer renderer = new GameRenderer();
 
     public Game()
     {
@@ -49,16 +50,10 @@ public class Game
     
     public void Start()
     {
-        foreach (var column in columns)
-        {
-            foreach (var card in column.VisibleCards)
-            {
-                Console.WriteLine(card);
-            }
-        }
+        renderer.DisplayColumns(columns);
     }
     
-    public void DrawFromStock(int difficulty = 1)
+    private void DrawFromStock(int difficulty = 1)
     {
         for (int i = 0; i < difficulty && stockPile.Count > 0; i++)
         {
