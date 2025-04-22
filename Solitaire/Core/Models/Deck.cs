@@ -1,3 +1,5 @@
+using Solitaire.Core.Utils;
+
 namespace Solitaire.Core.Models;
 
 public class Deck
@@ -17,8 +19,7 @@ public class Deck
     
     public void Shuffle()
     {
-        var random = new Random();
-        _cards = _cards.OrderBy(c => random.Next()).ToList();
+        _cards.Shuffle();
     }
     
     public Card? DrawCard()

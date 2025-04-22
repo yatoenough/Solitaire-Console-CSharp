@@ -1,4 +1,5 @@
 using Solitaire.Core.Models;
+using Solitaire.Core.Utils;
 
 namespace Solitaire.Core;
 
@@ -87,6 +88,8 @@ public class Game
         if (stockPile.Count != 0) return;
         
         var tmp = wastePile.Reverse().ToList();
+        tmp.Shuffle();
+        
         wastePile.Clear();
         
         foreach (var card in tmp)
