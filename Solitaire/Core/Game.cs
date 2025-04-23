@@ -82,9 +82,10 @@ public class Game
                 if (pickedColumn != null)
                 {
                     var card = pickedColumn.VisibleCards.Last();
+                    var success = MoveCard(card, PickColumn());
+                    if (!success) break;
                     pickedColumn.VisibleCards.Remove(card);
                     
-                    MoveCard(card, PickColumn());
                     if(pickedColumn.VisibleCards.Count == 0) pickedColumn.FlipLastHidden();
                     pickedColumn = null;
                 }
@@ -102,14 +103,19 @@ public class Game
         NextMove();
     }
 
-    private void MoveCard(Card card, Column destination)
+    private bool MoveCard(Card card, Column destination)
     {
+        var lastVisibleCard = destination.VisibleCards.Last();
+        if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color) return false;
         destination.VisibleCards.Add(card);
+        return true;
     }
 
-    private Column PickColumn()
+    private Column? PickColumn()
     {
-        return columns[pointerPosition];
+        var column = columns[pointerPosition];
+        if(pickedColumn == null && column.CardsCount == 0) return null;
+        return column;
     }
 
     private void MovePointer(PointerMove value)

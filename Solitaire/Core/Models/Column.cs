@@ -14,4 +14,6 @@ public class Column
             VisibleCards.Add(card);
         }
     }
+    
+    public int CardsCount => VisibleCards.Count +  HiddenCards.Count;
 }

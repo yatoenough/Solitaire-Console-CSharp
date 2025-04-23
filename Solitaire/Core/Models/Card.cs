@@ -4,6 +4,7 @@ public class Card(int value, Suit suit)
 {
     public int Value { get; } = value;
     public Suit Suit { get; } = suit;
+    public ConsoleColor Color => (Suit == Suit.Hearts || Suit == Suit.Diamonds) ? ConsoleColor.Red : ConsoleColor.White;
     public bool IsShown { get; set; } = false;
 
     public override string ToString()
@@ -24,8 +25,7 @@ public class Card(int value, Suit suit)
 
         if (!IsShown) return "XX";
 
-        Console.ForegroundColor = (Suit == Suit.Hearts || Suit == Suit.Diamonds)
-            ? ConsoleColor.Red : ConsoleColor.White;
+        Console.ForegroundColor = Color;
 
         return $"{val}{symbol}";
     }
