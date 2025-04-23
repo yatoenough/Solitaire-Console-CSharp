@@ -87,4 +87,20 @@ public class GameRenderer
         
         Console.WriteLine("↑");
     }
+
+    public void DisplayPickedCard(Column? column)
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        if (column != null)
+        {
+            var pickedCard = column.VisibleCards.Last();
+            Console.Write("Wybrana karta: ");
+            Console.WriteLine($"{pickedCard}");
+        }
+        else
+        {
+            Console.WriteLine("Wybrana karta: ");
+        }
+        
+    }
 }

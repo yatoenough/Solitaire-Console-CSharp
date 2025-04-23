@@ -13,6 +13,7 @@ public class Game
     private GameRenderer renderer = new GameRenderer();
     
     private int pointerPosition = 0;
+    private Column pickedColumn = null;
 
     public Game()
     {
@@ -71,10 +72,18 @@ public class Game
             case ConsoleKey.LeftArrow:
                 MovePointer(PointerMove.Left);
                 break;
+            case ConsoleKey.Enter:
+                pickedColumn = PickColumn();
+                break;
         }
 
         DrawBoard();
         NextMove();
+    }
+
+    private Column PickColumn()
+    {
+        return columns[pointerPosition];
     }
 
     private void MovePointer(PointerMove value)
@@ -110,6 +119,7 @@ public class Game
         
         renderer.DisplayColumns(columns);
         renderer.DisplayPointer(pointerPosition);
+        renderer.DisplayPickedCard(pickedColumn);
         renderer.DisplayFoundations(foundations);
         renderer.DisplayPiles(stockPile, wastePile);
     }
