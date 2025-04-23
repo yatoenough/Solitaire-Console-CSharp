@@ -14,6 +14,7 @@ public class Game
     
     private int pointerPosition = 0;
     private Column pickedColumn = null;
+    private Card pickedCard = null;
 
     public Game()
     {
@@ -88,6 +89,12 @@ public class Game
                     
                     if(pickedColumn.VisibleCards.Count == 0) pickedColumn.FlipLastHidden();
                     pickedColumn = null;
+                } else if (pickedCard != null)
+                {
+                    var success = MoveCard(pickedCard, PickColumn());
+                    if (!success) break;
+                    stockPile.Pop();
+                    pickedCard = null;
                 }
                 else
                 {
@@ -98,7 +105,15 @@ public class Game
                 End();
                 return;
             case ConsoleKey.Backspace:
+                if (pickedCard != null)
+                {
+                    wastePile.Push(pickedCard);
+                }
+                pickedCard = null;
                 pickedColumn = null;
+                break;
+            case ConsoleKey.P:
+                PickCardFromStock();
                 break;
         }
 
@@ -112,6 +127,11 @@ public class Game
         if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color) return false;
         destination.VisibleCards.Add(card);
         return true;
+    }
+
+    private void PickCardFromStock()
+    {
+        if(wastePile.Count > 0) pickedCard = wastePile.Pop();
     }
 
     private Column? PickColumn()
@@ -154,7 +174,15 @@ public class Game
         
         renderer.DisplayColumns(columns);
         renderer.DisplayPointer(pointerPosition);
-        renderer.DisplayPickedCard(pickedColumn);
+        if (pickedColumn != null)
+        {
+            renderer.DisplayPickedCard(pickedColumn.VisibleCards.Last());
+        }
+        else
+        {
+            renderer.DisplayPickedCard(pickedCard);
+        }
+        
         renderer.DisplayFoundations(foundations);
         renderer.DisplayPiles(stockPile, wastePile);
     }
