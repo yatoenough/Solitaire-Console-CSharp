@@ -1,3 +1,5 @@
+using Solitaire.Core.Utils;
+
 namespace Solitaire.Core.Models;
 
 public class Deck
@@ -8,7 +10,7 @@ public class Deck
     {
         foreach (Suit suit in Enum.GetValues(typeof(Suit)))
         {
-            for (int i = 0; i <= 13; i++)
+            for (int i = 1; i <= 13; i++)
             {
                 _cards.Add(new Card(i, suit));
             }
@@ -17,8 +19,7 @@ public class Deck
     
     public void Shuffle()
     {
-        var random = new Random();
-        _cards = _cards.OrderBy(c => random.Next()).ToList();
+        _cards.Shuffle();
     }
     
     public Card? DrawCard()
@@ -30,5 +31,7 @@ public class Deck
         
         return card;
     }
+    
+    public int Count => _cards.Count;
 
 }
