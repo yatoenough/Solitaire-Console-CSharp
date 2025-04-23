@@ -122,10 +122,41 @@ public class Game
             case ConsoleKey.P:
                 PickCardFromStock();
                 break;
+            case ConsoleKey.F:
+                if (_pickedCard != null)
+                {
+                    var success = SaveToFoundation(_pickedCard);
+                    if (!success) break;
+                }
+                if(_activeColumn != null && _activeColumn.VisibleCards.Count == 0) _activeColumn.FlipLastHidden();
+                _pickedCard = null;
+                break;
         }
 
         DrawBoard();
         NextMove();
+    }
+
+    private bool SaveToFoundation(Card card)
+    {
+        var foundation = _foundations[(int)card.Suit];
+        if (foundation.Count == 0)
+        {
+            if (card.Value == 1)
+            {
+                foundation.Push(card);
+                return true;
+            }
+            
+        }
+        else if (card.Value == foundation.Last().Value + 1)
+        {
+            foundation.Push(card);
+            return true;
+        }
+        
+
+        return false;
     }
 
     private bool MoveCard(Card card, Column destination)
