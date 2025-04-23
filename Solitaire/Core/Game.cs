@@ -130,7 +130,16 @@ public class Game
 
     private bool MoveCard(Card card, Column destination)
     {
-        if (destination.VisibleCards.Count == 0) return false;
+        if (destination.VisibleCards.Count == 0)
+        {
+            if (card.Value == 13)
+            {
+                destination.VisibleCards.Add(card);
+                return true;
+            }
+            
+            return false;
+        };
         var lastVisibleCard = destination.VisibleCards.Last();
         if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color) return false;
         destination.VisibleCards.Add(card);
