@@ -5,20 +5,20 @@ namespace Solitaire.Core;
 
 public class Game
 {
-    private Deck deck;
-    private List<Column> columns = new List<Column>();
-    private List<Stack<Card>> foundations = new List<Stack<Card>>();
-    private Stack<Card> stockPile = new Stack<Card>();
-    private Stack<Card> wastePile = new Stack<Card>();
-    private GameRenderer renderer = new GameRenderer();
-    
-    private int pointerPosition = 0;
-    private Column pickedColumn = null;
-    private Card pickedCard = null;
+    private List<Column> _columns = new List<Column>();
+    private List<Stack<Card>> _foundations = new List<Stack<Card>>();
+    private Stack<Card> _stockPile = new Stack<Card>();
+    private Stack<Card> _wastePile = new Stack<Card>();
+    private GameRenderer _renderer = new GameRenderer();
+
+    private int _pointerPosition;
+    private Card? _pickedCard;
+    private bool _pickedFromWaste;
+    private Column? _activeColumn;
 
     public Game()
     {
-        deck = new Deck();
+        var deck = new Deck();
         deck.Shuffle();
 
         for (int i = 0; i < 7; i++)
@@ -38,18 +38,18 @@ public class Game
                         column.VisibleCards.Add(card);
                 }
             }
-            columns.Add(column);
+            _columns.Add(column);
         }
         
         Card? cardFromDeck = deck.DrawCard();
         while (cardFromDeck != null)
         {
-            stockPile.Push(cardFromDeck);
+            _stockPile.Push(cardFromDeck);
             cardFromDeck = deck.DrawCard();
         }
         
         for(int i = 0; i < 4; i++)
-            foundations.Add(new Stack<Card>());
+            _foundations.Add(new Stack<Card>());
         
     }
     
@@ -80,37 +80,42 @@ public class Game
                 MovePointer(PointerMove.Left);
                 break;
             case ConsoleKey.Enter:
-                if (pickedColumn != null)
+                if (_pickedCard != null)
                 {
-                    var card = pickedColumn.VisibleCards.Last();
-                    var success = MoveCard(card, PickColumn());
+                    if(_activeColumn != null) _activeColumn.FlipLastHidden();
+                    _activeColumn = _columns[_pointerPosition];
+                    var success = MoveCard(_pickedCard, _activeColumn);
                     if (!success) break;
-                    pickedColumn.VisibleCards.Remove(card);
+                    _pickedCard = null;
                     
-                    if(pickedColumn.VisibleCards.Count == 0) pickedColumn.FlipLastHidden();
-                    pickedColumn = null;
-                } else if (pickedCard != null)
-                {
-                    var success = MoveCard(pickedCard, PickColumn());
-                    if (!success) break;
-                    stockPile.Pop();
-                    pickedCard = null;
                 }
                 else
                 {
-                    pickedColumn = PickColumn();
+                    _activeColumn = _columns[_pointerPosition];
+                    
+                    if(_activeColumn.VisibleCards.Count == 0)break;
+                    
+                    Card topCard = _activeColumn.VisibleCards.Last();
+                    _pickedCard = topCard;
+                    
+                    _activeColumn.VisibleCards.Remove(topCard);
                 }
                 break;
             case ConsoleKey.Q:
                 End();
                 return;
             case ConsoleKey.Backspace:
-                if (pickedCard != null)
+                if (_pickedFromWaste && _pickedCard != null)
                 {
-                    wastePile.Push(pickedCard);
+                    _wastePile.Push(_pickedCard);
+                    _pickedFromWaste = false;
                 }
-                pickedCard = null;
-                pickedColumn = null;
+                else if (_pickedCard != null && _activeColumn != null)
+                {
+                    _activeColumn.VisibleCards.Add(_pickedCard);
+                }
+                
+                _pickedCard = null;
                 break;
             case ConsoleKey.P:
                 PickCardFromStock();
@@ -131,14 +136,8 @@ public class Game
 
     private void PickCardFromStock()
     {
-        if(wastePile.Count > 0) pickedCard = wastePile.Pop();
-    }
-
-    private Column? PickColumn()
-    {
-        var column = columns[pointerPosition];
-        if(pickedColumn == null && column.CardsCount == 0) return null;
-        return column;
+        if(_wastePile.Count > 0) _pickedCard = _wastePile.Pop();
+        _pickedFromWaste = true;
     }
 
     private void MovePointer(PointerMove value)
@@ -146,23 +145,23 @@ public class Game
         switch (value)
         {
             case PointerMove.Left:
-                if (pointerPosition > 0)
+                if (_pointerPosition > 0)
                 {
-                    pointerPosition--;
+                    _pointerPosition--;
                 }
                 else
                 {
-                    pointerPosition = 6;
+                    _pointerPosition = 6;
                 }
                 break;
             case PointerMove.Right:
-                if (pointerPosition < 6)
+                if (_pointerPosition < 6)
                 {
-                    pointerPosition++;
+                    _pointerPosition++;
                 }
                 else
                 {
-                    pointerPosition = 0;
+                    _pointerPosition = 0;
                 }
                 break;
         }
@@ -172,43 +171,35 @@ public class Game
     {
         Console.Clear();
         
-        renderer.DisplayColumns(columns);
-        renderer.DisplayPointer(pointerPosition);
-        if (pickedColumn != null)
-        {
-            renderer.DisplayPickedCard(pickedColumn.VisibleCards.Last());
-        }
-        else
-        {
-            renderer.DisplayPickedCard(pickedCard);
-        }
-        
-        renderer.DisplayFoundations(foundations);
-        renderer.DisplayPiles(stockPile, wastePile);
+        _renderer.DisplayColumns(_columns);
+        _renderer.DisplayPointer(_pointerPosition);
+        _renderer.DisplayPickedCard(_pickedCard);
+        _renderer.DisplayFoundations(_foundations);
+        _renderer.DisplayPiles(_stockPile, _wastePile);
     }
     
     private void DrawFromStock(int difficulty = 1)
     {
-        for (int i = 0; i < difficulty && stockPile.Count >= 0; i++)
+        for (int i = 0; i < difficulty && _stockPile.Count >= 0; i++)
         {
-            if(stockPile.Count == 0) break;
+            if(_stockPile.Count == 0) break;
             
-            Card card = stockPile.Pop();
+            Card card = _stockPile.Pop();
             card.IsShown = true;
-            wastePile.Push(card);
+            _wastePile.Push(card);
             
             return;
         }
         
-        var tmp = wastePile.ToList();
+        var tmp = _wastePile.ToList();
         tmp.Shuffle();
         
-        wastePile.Clear();
+        _wastePile.Clear();
         
         foreach (var card in tmp)
         {
             card.IsShown = false;
-            stockPile.Push(card);
+            _stockPile.Push(card);
         }
         
         DrawFromStock();
