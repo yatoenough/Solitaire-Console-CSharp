@@ -2,9 +2,9 @@ namespace Solitaire.Core;
 
 public static class UserInputProvider
 {
-    public static char Get()
+    public static ConsoleKey Get()
     {
         Console.ForegroundColor = ConsoleColor.White;
-        return Console.ReadKey().KeyChar;
+        return Console.ReadKey().Key;
     }
 }

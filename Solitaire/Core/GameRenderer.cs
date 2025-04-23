@@ -76,4 +76,15 @@ public class GameRenderer
         
         Console.WriteLine();
     }
+
+    public void DisplayPointer(int position)
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        for (int column = 0; column < position; column++)
+        {
+            Console.Write("    ");
+        }
+        
+        Console.WriteLine("↑");
+    }
 }

@@ -11,6 +11,8 @@ public class Game
     private Stack<Card> stockPile = new Stack<Card>();
     private Stack<Card> wastePile = new Stack<Card>();
     private GameRenderer renderer = new GameRenderer();
+    
+    private int pointerPosition = 0;
 
     public Game()
     {
@@ -55,18 +57,49 @@ public class Game
         NextMove();
     }
 
-    public void NextMove()
+    private void NextMove()
     {
-        switch (UserInputProvider.Get())
+        var pressedKey = UserInputProvider.Get();
+        switch(pressedKey)
         {
-            case 'd':
+            case ConsoleKey.D:
                 DrawFromStock();
-                DrawBoard();
-                NextMove();
                 break;
-            default:
-                DrawBoard();
-                NextMove();
+            case ConsoleKey.RightArrow:
+                MovePointer(PointerMove.Right);
+                break;
+            case ConsoleKey.LeftArrow:
+                MovePointer(PointerMove.Left);
+                break;
+        }
+
+        DrawBoard();
+        NextMove();
+    }
+
+    private void MovePointer(PointerMove value)
+    {
+        switch (value)
+        {
+            case PointerMove.Left:
+                if (pointerPosition > 0)
+                {
+                    pointerPosition--;
+                }
+                else
+                {
+                    pointerPosition = 6;
+                }
+                break;
+            case PointerMove.Right:
+                if (pointerPosition < 6)
+                {
+                    pointerPosition++;
+                }
+                else
+                {
+                    pointerPosition = 0;
+                }
                 break;
         }
     }
@@ -76,6 +109,7 @@ public class Game
         Console.Clear();
         
         renderer.DisplayColumns(columns);
+        renderer.DisplayPointer(pointerPosition);
         renderer.DisplayFoundations(foundations);
         renderer.DisplayPiles(stockPile, wastePile);
     }
