@@ -97,6 +97,9 @@ public class Game
             case ConsoleKey.Q:
                 End();
                 return;
+            case ConsoleKey.Backspace:
+                pickedColumn = null;
+                break;
         }
 
         DrawBoard();
