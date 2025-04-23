@@ -82,23 +82,24 @@ public class Game
             case ConsoleKey.Enter:
                 if (_pickedCard != null)
                 {
-                    if(_activeColumn != null) _activeColumn.FlipLastHidden();
-                    _activeColumn = _columns[_pointerPosition];
-                    var success = MoveCard(_pickedCard, _activeColumn);
+                    var success = MoveCard(_pickedCard, _columns[_pointerPosition]);
                     if (!success) break;
+                    if(!_pickedFromWaste && _activeColumn != null) _activeColumn.FlipLastHidden();
                     _pickedCard = null;
-                    
                 }
                 else
                 {
+                    _pickedFromWaste = false;
                     _activeColumn = _columns[_pointerPosition];
                     
-                    if(_activeColumn.VisibleCards.Count == 0)break;
+                    if(_activeColumn.VisibleCards.Count == 0) break;
+                    
                     
                     Card topCard = _activeColumn.VisibleCards.Last();
                     _pickedCard = topCard;
                     
                     _activeColumn.VisibleCards.Remove(topCard);
+                    
                 }
                 break;
             case ConsoleKey.Q:
@@ -114,7 +115,8 @@ public class Game
                 {
                     _activeColumn.VisibleCards.Add(_pickedCard);
                 }
-                
+
+                _pickedFromWaste = false;
                 _pickedCard = null;
                 break;
             case ConsoleKey.P:
@@ -128,6 +130,7 @@ public class Game
 
     private bool MoveCard(Card card, Column destination)
     {
+        if (destination.VisibleCards.Count == 0) return false;
         var lastVisibleCard = destination.VisibleCards.Last();
         if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color) return false;
         destination.VisibleCards.Add(card);
