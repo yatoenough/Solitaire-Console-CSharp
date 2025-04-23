@@ -58,6 +58,12 @@ public class Game
         NextMove();
     }
 
+    public void End()
+    {
+        Console.Clear();
+        Console.WriteLine("Bye!");
+    }
+
     private void NextMove()
     {
         var pressedKey = UserInputProvider.Get();
@@ -73,12 +79,32 @@ public class Game
                 MovePointer(PointerMove.Left);
                 break;
             case ConsoleKey.Enter:
-                pickedColumn = PickColumn();
+                if (pickedColumn != null)
+                {
+                    var card = pickedColumn.VisibleCards.Last();
+                    pickedColumn.VisibleCards.Remove(card);
+                    
+                    MoveCard(card, PickColumn());
+                    if(pickedColumn.VisibleCards.Count == 0) pickedColumn.FlipLastHidden();
+                    pickedColumn = null;
+                }
+                else
+                {
+                    pickedColumn = PickColumn();
+                }
                 break;
+            case ConsoleKey.Q:
+                End();
+                return;
         }
 
         DrawBoard();
         NextMove();
+    }
+
+    private void MoveCard(Card card, Column destination)
+    {
+        destination.VisibleCards.Add(card);
     }
 
     private Column PickColumn()
