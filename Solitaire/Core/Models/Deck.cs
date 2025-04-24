@@ -17,6 +17,8 @@ public class Deck
         }
     }
     
+    public int Count => _cards.Count;
+    
     public void Shuffle()
     {
         _cards.Shuffle();
@@ -31,7 +33,10 @@ public class Deck
         
         return card;
     }
-    
-    public int Count => _cards.Count;
 
+    public void PutCard(Card card)
+    {
+        _cards.Add(card);
+    }
+    
 }

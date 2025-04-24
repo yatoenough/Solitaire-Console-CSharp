@@ -7,7 +7,7 @@ public class Game
 {
     private List<Column> _columns = new List<Column>();
     private List<Stack<Card>> _foundations = new List<Stack<Card>>();
-    private Stack<Card> _stockPile = new Stack<Card>();
+    private Deck _deck = new Deck();
     private Stack<Card> _wastePile = new Stack<Card>();
     private GameRenderer _renderer = new GameRenderer();
 
@@ -18,15 +18,14 @@ public class Game
 
     public Game()
     {
-        var deck = new Deck();
-        deck.Shuffle();
+        _deck.Shuffle();
 
         for (int i = 0; i < 7; i++)
         {
             var column = new Column();
             for (int j = 0; j <= i; j++)
             {
-                var card = deck.DrawCard();
+                var card = _deck.DrawCard();
                 if (card != null)
                 {
                     if(j == i)
@@ -41,16 +40,8 @@ public class Game
             _columns.Add(column);
         }
         
-        Card? cardFromDeck = deck.DrawCard();
-        while (cardFromDeck != null)
-        {
-            _stockPile.Push(cardFromDeck);
-            cardFromDeck = deck.DrawCard();
-        }
-        
         for(int i = 0; i < 4; i++)
             _foundations.Add(new Stack<Card>());
-        
     }
     
     public void Start()
@@ -71,7 +62,7 @@ public class Game
         switch(pressedKey)
         {
             case ConsoleKey.D:
-                DrawFromStock();
+                DrawFromDeck();
                 break;
             case ConsoleKey.RightArrow:
                 MovePointer(PointerMove.Right);
@@ -120,7 +111,7 @@ public class Game
                 _pickedCard = null;
                 break;
             case ConsoleKey.P:
-                PickCardFromStock();
+                PickCardFromWaste();
                 break;
             case ConsoleKey.F:
                 if (_pickedCard != null)
@@ -128,7 +119,8 @@ public class Game
                     var success = SaveToFoundation(_pickedCard);
                     if (!success) break;
                 }
-                if(_activeColumn != null && _activeColumn.VisibleCards.Count == 0) _activeColumn.FlipLastHidden();
+                if(_activeColumn != null && _activeColumn.VisibleCards.Count == 0)
+                    _activeColumn.FlipLastHidden();
                 _pickedCard = null;
                 break;
         }
@@ -140,6 +132,7 @@ public class Game
     private bool SaveToFoundation(Card card)
     {
         var foundation = _foundations[(int)card.Suit];
+        
         if (foundation.Count == 0)
         {
             if (card.Value == 1)
@@ -155,7 +148,6 @@ public class Game
             return true;
         }
         
-
         return false;
     }
 
@@ -170,14 +162,19 @@ public class Game
             }
             
             return false;
-        };
+        }
+        
         var lastVisibleCard = destination.VisibleCards.Last();
-        if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color) return false;
+        
+        if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color)
+            return false;
+        
         destination.VisibleCards.Add(card);
+        
         return true;
     }
 
-    private void PickCardFromStock()
+    private void PickCardFromWaste()
     {
         if(_pickedCard != null) return;
         if(_wastePile.Count > 0) _pickedCard = _wastePile.Pop();
@@ -219,33 +216,41 @@ public class Game
         _renderer.DisplayPointer(_pointerPosition);
         _renderer.DisplayPickedCard(_pickedCard);
         _renderer.DisplayFoundations(_foundations);
-        _renderer.DisplayPiles(_stockPile, _wastePile);
+        _renderer.DisplayPiles(_deck, _wastePile);
     }
     
-    private void DrawFromStock(int difficulty = 1)
+    private void DrawFromDeck(int difficulty = 1)
     {
-        for (int i = 0; i < difficulty && _stockPile.Count >= 0; i++)
+        if (_deck.Count == difficulty - 1)
         {
-            if(_stockPile.Count == 0) break;
+            var tmp = _wastePile.ToList();
             
-            Card card = _stockPile.Pop();
-            card.IsShown = true;
-            _wastePile.Push(card);
+            Card remainingCard;
+            while (_deck.Count > 0)
+            {
+                remainingCard = _deck.DrawCard()!;
+                tmp.Add(remainingCard);
+            }
             
-            return;
+            tmp.Shuffle();
+        
+            _wastePile.Clear();
+        
+            foreach (var card in tmp)
+            {
+                card.IsShown = false;
+                _deck.PutCard(card);
+            }
         }
         
-        var tmp = _wastePile.ToList();
-        tmp.Shuffle();
-        
-        _wastePile.Clear();
-        
-        foreach (var card in tmp)
+        for (int i = 0; i < difficulty && _deck.Count > 0; i++)
         {
-            card.IsShown = false;
-            _stockPile.Push(card);
+            Card? card = _deck.DrawCard();
+            if (card != null)
+            {
+                card.IsShown = true;
+                _wastePile.Push(card);
+            }
         }
-        
-        DrawFromStock();
     }
 }

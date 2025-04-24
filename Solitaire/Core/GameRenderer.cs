@@ -60,11 +60,11 @@ public class GameRenderer
         Console.WriteLine();
     }
 
-    public void DisplayPiles(Stack<Card> stockPile, Stack<Card> wastePile)
+    public void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
         Console.ForegroundColor = ConsoleColor.White;
 
-        Console.Write($"Kart w stosie rezerwowym: {stockPile.Count}  ");
+        Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
         
         Console.WriteLine("\n");
         Console.Write("Dobrane karty: ");
