@@ -179,6 +179,7 @@ public class Game
 
     private void PickCardFromStock()
     {
+        if(_pickedCard != null) return;
         if(_wastePile.Count > 0) _pickedCard = _wastePile.Pop();
         _pickedFromWaste = true;
     }
