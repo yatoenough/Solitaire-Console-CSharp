@@ -5,7 +5,8 @@ public class Card(int value, Suit suit)
     public int Value { get; } = value;
     public Suit Suit { get; } = suit;
     public ConsoleColor Color => (Suit == Suit.Hearts || Suit == Suit.Diamonds) ? ConsoleColor.Red : ConsoleColor.White;
-    public bool IsShown { get; set; } = false;
+    public bool IsShown { get; set; }
+    public bool IsSelected { get; set; }
 
     public void Display()
     {
@@ -29,6 +30,8 @@ public class Card(int value, Suit suit)
         };
 
         Console.ForegroundColor = Color;
+
+        if (IsSelected) Console.BackgroundColor = ConsoleColor.DarkYellow;
 
         var cardString = $"{val}{symbol}";
         Console.Write($"{cardString, -4}");

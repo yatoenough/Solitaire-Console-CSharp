@@ -18,6 +18,9 @@ public class Game
     private Column? sourceColumn;
     private bool pickedFromWaste;
     
+    private bool isSelectingRange = false;
+    private int rangeStartIndex = -1;
+    
     public Game()
     {
         InitGame();
@@ -28,7 +31,7 @@ public class Game
         while (true)
         {
             Console.Clear();
-            renderer.Render(columns, foundations, deckManager, pointer, pickedCards);
+            renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
 
             var key = Console.ReadKey(true).Key;
 
@@ -66,7 +69,13 @@ public class Game
     }
 
     private void HandleInput(ConsoleKey key)
-    { 
+    {
+        if (isSelectingRange)
+        {
+            HandleRangeSelectionInput(key);
+            return;
+        }
+        
         switch(key)
         {
             case ConsoleKey.RightArrow:
@@ -92,9 +101,12 @@ public class Game
             case ConsoleKey.F:
                 StoreCardInFoundation();
                 break;
+            case ConsoleKey.M:
+                EnterRangeSelection();
+                break;
         }
     }
-
+    
     private void HandleEnterKey()
     {
         if (pickedCards != null)
@@ -117,6 +129,7 @@ public class Game
             {
                 int index = SelectPickableIndex(sourceColumn);
                 pickedCards = sourceColumn.VisibleCards.GetRange(index, sourceColumn.VisibleCards.Count - index);
+                foreach(var card in pickedCards) card.IsSelected = false;
                 sourceColumn.VisibleCards.RemoveRange(index, pickedCards.Count);
                 pickedFromWaste = false;
             }
@@ -175,4 +188,47 @@ public class Game
         }
     }
     
+    private void EnterRangeSelection()
+    {
+        var column = columns[pointer.Position];
+        if (column.VisibleCards.Count == 0 || pickedCards != null) return;
+
+        isSelectingRange = true;
+        rangeStartIndex = column.VisibleCards.Count - 1;
+    }
+    
+    private void HandleRangeSelectionInput(ConsoleKey key)
+    {
+        var column = columns[pointer.Position];
+        int maxIndex = column.VisibleCards.Count - 1;
+
+        switch (key)
+        {
+            case ConsoleKey.UpArrow:
+                if (rangeStartIndex > 0)
+                    rangeStartIndex--;
+                break;
+            case ConsoleKey.DownArrow:
+                if (rangeStartIndex < maxIndex)
+                    rangeStartIndex++;
+                break;
+            case ConsoleKey.Enter:
+                PickRange(column, rangeStartIndex);
+                isSelectingRange = false;
+                break;
+            case ConsoleKey.Backspace:
+                isSelectingRange = false;
+                rangeStartIndex = -1;
+                break;
+        }
+    }
+    
+    private void PickRange(Column column, int startIndex)
+    {
+        pickedCards = column.VisibleCards.GetRange(startIndex, column.VisibleCards.Count - startIndex);
+        column.VisibleCards.RemoveRange(startIndex, pickedCards.Count);
+        sourceColumn = column;
+        pickedFromWaste = false;
+    }
+
 }
