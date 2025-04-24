@@ -1,10 +1,19 @@
+using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 
-namespace Solitaire.Core;
+namespace Solitaire.Core.Rendering;
 
 public class GameRenderer
 {
-    public void DisplayColumns(List<Column> columns)
+    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, Card? activeCard)
+    {
+        DisplayColumns(columns);
+        DisplayPointer(pointer);
+        DisplayPickedCard(activeCard);
+        DisplayFoundations(foundations);
+        DisplayPiles(deckManager.GetDeck(), deckManager.GetWaste());
+    }
+    private void DisplayColumns(List<Column> columns)
     {
         int maxHeight = columns.Max(c => c.HiddenCards.Count + c.VisibleCards.Count);
 
@@ -20,14 +29,13 @@ public class GameRenderer
                 {
                     if (row < hiddenCount)
                     {
-                        Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("XX  ");
                     }
                     else
                     {
                         var visibleIndex = row - hiddenCount;
                         var card = column.VisibleCards[visibleIndex];
-                        Console.Write($"{card,-4}");
+                        card.Display();
                     }
                 }
                 else
@@ -40,10 +48,8 @@ public class GameRenderer
         }
     }
 
-    public void DisplayFoundations(List<Stack<Card>> foundations)
+    private void DisplayFoundations(List<Stack<Card>> foundations)
     {
-        Console.ForegroundColor = ConsoleColor.White;
-        
         Console.Write("Stosy końcowe: ");
         foreach (var foundation in foundations)
         {
@@ -51,8 +57,7 @@ public class GameRenderer
             {
                 Card topCard = foundation.Peek();
                 topCard.IsShown = true;
-                Console.Write($"{topCard,-4}");
-                Console.ForegroundColor = ConsoleColor.White;
+                topCard.Display();
             }
             else
             {
@@ -63,10 +68,8 @@ public class GameRenderer
         Console.WriteLine();
     }
 
-    public void DisplayPiles(Deck deck, Stack<Card> wastePile)
+    private void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
-        Console.ForegroundColor = ConsoleColor.White;
-
         Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
         
         Console.WriteLine("\n");
@@ -74,30 +77,31 @@ public class GameRenderer
         
         foreach(var card in wastePile)
         {
-            Console.Write($"{card,-4}");
+            card.Display();
         }
         
         Console.WriteLine();
     }
 
-    public void DisplayPointer(int position)
+    private void DisplayPointer(Pointer pointer)
     {
-        Console.ForegroundColor = ConsoleColor.White;
-        for (int column = 0; column < position; column++)
+        for (int column = 0; column < pointer.Position; column++)
         {
             Console.Write("    ");
         }
         
-        Console.WriteLine("↑");
+        Console.WriteLine(pointer);
     }
 
-    public void DisplayPickedCard(Card? card)
+    private void DisplayPickedCard(Card? card)
     {
-        Console.ForegroundColor = ConsoleColor.White;
         if (card != null)
         {
             Console.Write("Wybrana karta: ");
-            Console.WriteLine($"{card}");
+            
+            card.Display();
+            
+            Console.WriteLine();
         }
         else
         {

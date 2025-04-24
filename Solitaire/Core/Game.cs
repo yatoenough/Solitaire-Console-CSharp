@@ -1,256 +1,162 @@
+using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
+using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
 
 namespace Solitaire.Core;
 
 public class Game
 {
-    private List<Column> _columns = new List<Column>();
-    private List<Stack<Card>> _foundations = new List<Stack<Card>>();
-    private Deck _deck = new Deck();
-    private Stack<Card> _wastePile = new Stack<Card>();
-    private GameRenderer _renderer = new GameRenderer();
-
-    private int _pointerPosition;
-    private Card? _pickedCard;
-    private bool _pickedFromWaste;
-    private Column? _activeColumn;
-
+    private readonly List<Column> columns = [];
+    private readonly List<Stack<Card>> foundations = [];
+    private readonly DeckManager deckManager = new();
+    private readonly GameRenderer renderer = new();
+    private readonly Pointer pointer = new();
+    private readonly MoveValidator validator = new();
+    
+    private Card? activeCard;
+    private Column? activeColumn;
+    private bool pickedFromWaste;
+    
     public Game()
     {
-        _deck.Shuffle();
+        InitGame();
+    }
+    
+    public void Start()
+    {
+        while (true)
+        {
+            Console.Clear();
+            renderer.Render(columns, foundations, deckManager, pointer, activeCard);
 
+            var key = Console.ReadKey(true).Key;
+
+            if (key == ConsoleKey.Q) break;
+
+            HandleInput(key);
+        }
+
+        Console.Clear();
+        Console.WriteLine("Bye!");
+    }
+
+    private void InitGame()
+    {
         for (int i = 0; i < 7; i++)
         {
             var column = new Column();
             for (int j = 0; j <= i; j++)
             {
-                var card = _deck.DrawCard();
-                if (card != null)
-                {
-                    if(j == i)
-                        card.IsShown = true;
-                    else
-                        column.HiddenCards.Push(card);
+                var card = deckManager.DrawFromDeck();
                 
-                    if(card.IsShown)
-                        column.VisibleCards.Add(card);
-                }
+                if(j == i)
+                    card.IsShown = true;
+                else
+                    column.HiddenCards.Push(card);
+                
+                if(card.IsShown)
+                    column.VisibleCards.Add(card);
             }
-            _columns.Add(column);
+            columns.Add(column);
         }
         
         for(int i = 0; i < 4; i++)
-            _foundations.Add(new Stack<Card>());
-    }
-    
-    public void Start()
-    {
-        DrawBoard();
-        NextMove();
+            foundations.Add(new Stack<Card>());
     }
 
-    public void End()
-    {
-        Console.Clear();
-        Console.WriteLine("Bye!");
-    }
-
-    private void NextMove()
-    {
-        var pressedKey = UserInputProvider.Get();
-        switch(pressedKey)
+    private void HandleInput(ConsoleKey key)
+    { 
+        switch(key)
         {
-            case ConsoleKey.D:
-                DrawFromDeck();
-                break;
             case ConsoleKey.RightArrow:
-                MovePointer(PointerMove.Right);
+                pointer.MoveRight();
                 break;
             case ConsoleKey.LeftArrow:
-                MovePointer(PointerMove.Left);
+                pointer.MoveLeft();
                 break;
+                
             case ConsoleKey.Enter:
-                if (_pickedCard != null)
-                {
-                    var success = MoveCard(_pickedCard, _columns[_pointerPosition]);
-                    if (!success) break;
-                    if(_activeColumn is { VisibleCards.Count: 0 }) _activeColumn.FlipLastHidden();
-                    _pickedCard = null;
-                }
-                else
-                {
-                    _pickedFromWaste = false;
-                    _activeColumn = _columns[_pointerPosition];
-                    
-                    if(_activeColumn.VisibleCards.Count == 0) break;
-                    
-                    
-                    Card topCard = _activeColumn.VisibleCards.Last();
-                    _pickedCard = topCard;
-                    
-                    _activeColumn.VisibleCards.Remove(topCard);
-                    
-                }
+                HandleEnterKey();
                 break;
-            case ConsoleKey.Q:
-                End();
-                return;
             case ConsoleKey.Backspace:
-                if (_pickedFromWaste && _pickedCard != null)
-                {
-                    _wastePile.Push(_pickedCard);
-                    _pickedFromWaste = false;
-                }
-                else if (_pickedCard != null && _activeColumn != null)
-                {
-                    _activeColumn.VisibleCards.Add(_pickedCard);
-                }
-
-                _pickedFromWaste = false;
-                _pickedCard = null;
+                PutCardBack();
+                break;
+                
+            case ConsoleKey.D:
+                deckManager.DrawCardToWaste();
                 break;
             case ConsoleKey.P:
                 PickCardFromWaste();
                 break;
             case ConsoleKey.F:
-                if (_pickedCard != null)
-                {
-                    var success = SaveToFoundation(_pickedCard);
-                    if (!success) break;
-                }
-                if(_activeColumn != null && _activeColumn.VisibleCards.Count == 0)
-                    _activeColumn.FlipLastHidden();
-                _pickedCard = null;
+                StoreCardInFoundation();
                 break;
         }
-
-        DrawBoard();
-        NextMove();
     }
 
-    private bool SaveToFoundation(Card card)
+    private void HandleEnterKey()
     {
-        var foundation = _foundations[(int)card.Suit];
-        
-        if (foundation.Count == 0)
+        if (activeCard != null)
         {
-            if (card.Value == 1)
+            var target = columns[pointer.Position];
+            if (validator.CanPlaceOnColumn(activeCard, target))
             {
-                foundation.Push(card);
-                return true;
-            }
-            
-        }
-        else if (card.Value == foundation.First().Value + 1)
-        {
-            foundation.Push(card);
-            return true;
-        }
-        
-        return false;
-    }
+                target.VisibleCards.Add(activeCard);
+                if (activeColumn?.VisibleCards.Count == 0)
+                    activeColumn?.FlipLastHidden();
 
-    private bool MoveCard(Card card, Column destination)
-    {
-        if (destination.VisibleCards.Count == 0)
+                activeCard = null;
+            }
+        }
+        else
         {
-            if (card.Value == 13)
+            activeColumn = columns[pointer.Position];
+            if (activeColumn.VisibleCards.Count > 0)
             {
-                destination.VisibleCards.Add(card);
-                return true;
+                activeCard = activeColumn.VisibleCards.Pop();
+                pickedFromWaste = false;
             }
-            
-            return false;
         }
-        
-        var lastVisibleCard = destination.VisibleCards.Last();
-        
-        if(card.Value+1 != lastVisibleCard.Value || card.Color == lastVisibleCard.Color)
-            return false;
-        
-        destination.VisibleCards.Add(card);
-        
-        return true;
-    }
-
-    private void PickCardFromWaste()
-    {
-        if(_pickedCard != null) return;
-        if(_wastePile.Count > 0) _pickedCard = _wastePile.Pop();
-        _pickedFromWaste = true;
-    }
-
-    private void MovePointer(PointerMove value)
-    {
-        switch (value)
-        {
-            case PointerMove.Left:
-                if (_pointerPosition > 0)
-                {
-                    _pointerPosition--;
-                }
-                else
-                {
-                    _pointerPosition = 6;
-                }
-                break;
-            case PointerMove.Right:
-                if (_pointerPosition < 6)
-                {
-                    _pointerPosition++;
-                }
-                else
-                {
-                    _pointerPosition = 0;
-                }
-                break;
-        }
-    }
-
-    private void DrawBoard()
-    {
-        Console.Clear();
-        
-        _renderer.DisplayColumns(_columns);
-        _renderer.DisplayPointer(_pointerPosition);
-        _renderer.DisplayPickedCard(_pickedCard);
-        _renderer.DisplayFoundations(_foundations);
-        _renderer.DisplayPiles(_deck, _wastePile);
     }
     
-    private void DrawFromDeck(int difficulty = 1)
+    private void PickCardFromWaste()
     {
-        if (_deck.Count == difficulty - 1)
+        if (activeCard != null) return;
+
+        var card = deckManager.PickFromWaste();
+        
+        if (card == null) return;
+        
+        activeCard = card;
+        pickedFromWaste = true;
+    }
+
+    private void PutCardBack()
+    {
+        if (activeCard == null) return;
+
+        if (pickedFromWaste)
+            deckManager.ReturnToWaste(activeCard);
+        else
+            activeColumn?.VisibleCards.Add(activeCard);
+
+        activeCard = null;
+        pickedFromWaste = false;
+    }
+
+    private void StoreCardInFoundation()
+    {
+        if(activeCard == null) return;
+        
+        var foundation = foundations[(int)activeCard.Suit];
+        if (validator.CanMoveToFoundation(activeCard, foundation))
         {
-            var tmp = _wastePile.ToList();
-            
-            Card remainingCard;
-            while (_deck.Count > 0)
-            {
-                remainingCard = _deck.DrawCard()!;
-                tmp.Add(remainingCard);
-            }
-            
-            tmp.Shuffle();
-        
-            _wastePile.Clear();
-        
-            foreach (var card in tmp)
-            {
-                card.IsShown = false;
-                _deck.PutCard(card);
-            }
-        }
-        
-        for (int i = 0; i < difficulty && _deck.Count > 0; i++)
-        {
-            Card? card = _deck.DrawCard();
-            if (card != null)
-            {
-                card.IsShown = true;
-                _wastePile.Push(card);
-            }
+            foundation.Push(activeCard);
+            if (activeColumn?.VisibleCards.Count == 0)
+                activeColumn?.FlipLastHidden();
+            activeCard = null;
         }
     }
+    
 }

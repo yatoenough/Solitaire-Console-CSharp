@@ -7,7 +7,7 @@ public class Card(int value, Suit suit)
     public ConsoleColor Color => (Suit == Suit.Hearts || Suit == Suit.Diamonds) ? ConsoleColor.Red : ConsoleColor.White;
     public bool IsShown { get; set; } = false;
 
-    public override string ToString()
+    public void Display()
     {
         string val = Value switch
         {
@@ -20,13 +20,19 @@ public class Card(int value, Suit suit)
             Suit.Hearts => "♥",
             Suit.Diamonds => "♦",
             Suit.Clubs => "♣",
-            Suit.Spades => "♠",
+            Suit.Spades => "♠"
         };
 
-        if (!IsShown) return "XX";
+        if (!IsShown)
+        {
+            Console.Write("XX");
+        };
 
         Console.ForegroundColor = Color;
 
-        return $"{val}{symbol}";
+        var cardString = $"{val}{symbol}";
+        Console.Write($"{cardString, -4}");
+        
+        Console.ResetColor();
     }
 }
