@@ -80,15 +80,15 @@ public class GameRenderer
         Console.WriteLine();
     }
 
-    public void DisplayPointer(int position)
+    public void DisplayPointer(Pointer pointer)
     {
         Console.ForegroundColor = ConsoleColor.White;
-        for (int column = 0; column < position; column++)
+        for (int column = 0; column < pointer.Position; column++)
         {
             Console.Write("    ");
         }
         
-        Console.WriteLine("↑");
+        Console.WriteLine(pointer);
     }
 
     public void DisplayPickedCard(Card? card)

@@ -5,13 +5,14 @@ namespace Solitaire.Core;
 
 public class Game
 {
-    private List<Column> _columns = new List<Column>();
-    private List<Stack<Card>> _foundations = new List<Stack<Card>>();
-    private Deck _deck = new Deck();
-    private Stack<Card> _wastePile = new Stack<Card>();
-    private GameRenderer _renderer = new GameRenderer();
+    private List<Column> _columns = [];
+    private List<Stack<Card>> _foundations = [];
+    private Deck _deck = new();
+    private Stack<Card> _wastePile = new();
+    private GameRenderer _renderer = new();
+    private Pointer _pointer = new();
+    private int PointerPosition => _pointer.Position;
 
-    private int _pointerPosition;
     private Card? _pickedCard;
     private bool _pickedFromWaste;
     private Column? _activeColumn;
@@ -73,7 +74,7 @@ public class Game
             case ConsoleKey.Enter:
                 if (_pickedCard != null)
                 {
-                    var success = MoveCard(_pickedCard, _columns[_pointerPosition]);
+                    var success = MoveCard(_pickedCard, _columns[PointerPosition]);
                     if (!success) break;
                     if(_activeColumn is { VisibleCards.Count: 0 }) _activeColumn.FlipLastHidden();
                     _pickedCard = null;
@@ -81,7 +82,7 @@ public class Game
                 else
                 {
                     _pickedFromWaste = false;
-                    _activeColumn = _columns[_pointerPosition];
+                    _activeColumn = _columns[PointerPosition];
                     
                     if(_activeColumn.VisibleCards.Count == 0) break;
                     
@@ -186,24 +187,10 @@ public class Game
         switch (value)
         {
             case PointerMove.Left:
-                if (_pointerPosition > 0)
-                {
-                    _pointerPosition--;
-                }
-                else
-                {
-                    _pointerPosition = 6;
-                }
+                _pointer.MoveLeft();
                 break;
             case PointerMove.Right:
-                if (_pointerPosition < 6)
-                {
-                    _pointerPosition++;
-                }
-                else
-                {
-                    _pointerPosition = 0;
-                }
+                _pointer.MoveRight();
                 break;
         }
     }
@@ -213,7 +200,7 @@ public class Game
         Console.Clear();
         
         _renderer.DisplayColumns(_columns);
-        _renderer.DisplayPointer(_pointerPosition);
+        _renderer.DisplayPointer(_pointer);
         _renderer.DisplayPickedCard(_pickedCard);
         _renderer.DisplayFoundations(_foundations);
         _renderer.DisplayPiles(_deck, _wastePile);
