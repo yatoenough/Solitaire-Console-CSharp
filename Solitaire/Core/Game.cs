@@ -72,7 +72,7 @@ public class Game
     {
         while (true)
         {
-            var pressedKey = UserInputProvider.Get();
+            var pressedKey = Console.ReadKey().Key;
 
             switch (pressedKey)
             {
