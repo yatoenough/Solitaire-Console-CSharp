@@ -84,7 +84,7 @@ public class Game
                 {
                     var success = MoveCard(_pickedCard, _columns[_pointerPosition]);
                     if (!success) break;
-                    if(!_pickedFromWaste && _activeColumn != null) _activeColumn.FlipLastHidden();
+                    if(_activeColumn is { VisibleCards.Count: 0 }) _activeColumn.FlipLastHidden();
                     _pickedCard = null;
                 }
                 else
@@ -149,7 +149,7 @@ public class Game
             }
             
         }
-        else if (card.Value == foundation.Last().Value + 1)
+        else if (card.Value == foundation.First().Value + 1)
         {
             foundation.Push(card);
             return true;
