@@ -3,17 +3,17 @@ using Solitaire.Core.Models;
 
 namespace Solitaire.Core.Rendering;
 
-public static class GameRenderer
+public class GameRenderer
 {
-    public static void Render(List<Column> columns, List<Stack<Card>> foundations, Deck deck, Stack<Card> wastePile, Pointer pointer, Card? activeCard)
+    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, Card? activeCard)
     {
         DisplayColumns(columns);
         DisplayPointer(pointer);
         DisplayPickedCard(activeCard);
         DisplayFoundations(foundations);
-        DisplayPiles(deck, wastePile);
+        DisplayPiles(deckManager.GetDeck(), deckManager.GetWaste());
     }
-    private static void DisplayColumns(List<Column> columns)
+    private void DisplayColumns(List<Column> columns)
     {
         int maxHeight = columns.Max(c => c.HiddenCards.Count + c.VisibleCards.Count);
 
@@ -49,7 +49,7 @@ public static class GameRenderer
         }
     }
 
-    private static void DisplayFoundations(List<Stack<Card>> foundations)
+    private void DisplayFoundations(List<Stack<Card>> foundations)
     {
         Console.Write("Stosy końcowe: ");
         foreach (var foundation in foundations)
@@ -69,7 +69,7 @@ public static class GameRenderer
         Console.WriteLine();
     }
 
-    private static void DisplayPiles(Deck deck, Stack<Card> wastePile)
+    private void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
         Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
         
@@ -84,7 +84,7 @@ public static class GameRenderer
         Console.WriteLine();
     }
 
-    private static void DisplayPointer(Pointer pointer)
+    private void DisplayPointer(Pointer pointer)
     {
         for (int column = 0; column < pointer.Position; column++)
         {
@@ -94,7 +94,7 @@ public static class GameRenderer
         Console.WriteLine(pointer);
     }
 
-    private static void DisplayPickedCard(Card? card)
+    private void DisplayPickedCard(Card? card)
     {
         if (card != null)
         {

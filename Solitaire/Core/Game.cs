@@ -9,8 +9,8 @@ public class Game
 {
     private readonly List<Column> columns = [];
     private readonly List<Stack<Card>> foundations = [];
-    private readonly Deck deck = new();
-    private readonly Stack<Card> wastePile = new();
+    private readonly DeckManager deckManager = new();
+    private readonly GameRenderer renderer = new();
     private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
     
@@ -28,7 +28,7 @@ public class Game
         while (true)
         {
             Console.Clear();
-            GameRenderer.Render(columns, foundations, deck, wastePile, pointer, activeCard);
+            renderer.Render(columns, foundations, deckManager, pointer, activeCard);
 
             var key = Console.ReadKey(true).Key;
 
@@ -43,15 +43,12 @@ public class Game
 
     private void InitGame()
     {
-        deck.Shuffle();
-
         for (int i = 0; i < 7; i++)
         {
             var column = new Column();
             for (int j = 0; j <= i; j++)
             {
-                var card = deck.DrawCard();
-                if (card == null) break;
+                var card = deckManager.DrawFromDeck();
                 
                 if(j == i)
                     card.IsShown = true;
@@ -73,21 +70,21 @@ public class Game
         switch(key)
         {
             case ConsoleKey.RightArrow:
-                MovePointer(PointerMove.Right);
+                pointer.MoveRight();
                 break;
             case ConsoleKey.LeftArrow:
-                MovePointer(PointerMove.Left);
+                pointer.MoveLeft();
                 break;
                 
             case ConsoleKey.Enter:
-                PickOrMoveCard();
+                HandleEnterKey();
                 break;
             case ConsoleKey.Backspace:
                 PutCardBack();
                 break;
                 
             case ConsoleKey.D:
-                DrawFromDeck();
+                deckManager.DrawCardToWaste();
                 break;
             case ConsoleKey.P:
                 PickCardFromWaste();
@@ -98,41 +95,54 @@ public class Game
         }
     }
 
-    private void PickOrMoveCard()
+    private void HandleEnterKey()
     {
         if (activeCard != null)
         {
-            var success = MoveCardToColumn(activeCard, columns[pointer.Position]);
-            if (!success) return;
-            if(activeColumn is { VisibleCards.Count: 0 }) activeColumn.FlipLastHidden();
-            activeCard = null;
+            var target = columns[pointer.Position];
+            if (validator.CanPlaceOnColumn(activeCard, target))
+            {
+                target.VisibleCards.Add(activeCard);
+                if (activeColumn?.VisibleCards.Count == 0)
+                    activeColumn?.FlipLastHidden();
+
+                activeCard = null;
+            }
         }
         else
         {
-            pickedFromWaste = false;
             activeColumn = columns[pointer.Position];
-                    
-            if(activeColumn.VisibleCards.Count == 0) return;
-        
-            activeCard = activeColumn.VisibleCards.Pop();
+            if (activeColumn.VisibleCards.Count > 0)
+            {
+                activeCard = activeColumn.VisibleCards.Pop();
+                pickedFromWaste = false;
+            }
         }
+    }
+    
+    private void PickCardFromWaste()
+    {
+        if (activeCard != null) return;
+
+        var card = deckManager.PickFromWaste();
+        
+        if (card == null) return;
+        
+        activeCard = card;
+        pickedFromWaste = true;
     }
 
     private void PutCardBack()
     {
-        if(activeCard == null) return;
-        
-        if (pickedFromWaste)
-        {
-            wastePile.Push(activeCard);
-        }
-        else
-        {
-            activeColumn?.VisibleCards.Add(activeCard);
-        }
+        if (activeCard == null) return;
 
-        pickedFromWaste = false;
+        if (pickedFromWaste)
+            deckManager.ReturnToWaste(activeCard);
+        else
+            activeColumn?.VisibleCards.Add(activeCard);
+
         activeCard = null;
+        pickedFromWaste = false;
     }
 
     private void StoreCardInFoundation()
@@ -148,77 +158,5 @@ public class Game
             activeCard = null;
         }
     }
-
-    private bool MoveCardToColumn(Card card, Column destination)
-    {
-        if (destination.VisibleCards.Count == 0)
-        {
-            if (card.Value != 13) return false;
-            destination.VisibleCards.Add(card);
-            return true;
-        }
-        
-        var lastVisibleCard = destination.VisibleCards.Last();
-
-        var cardCanBePlaced = card.Value == lastVisibleCard.Value - 1 && card.Color != lastVisibleCard.Color;
-        
-        if(!cardCanBePlaced)
-            return false;
-        
-        destination.VisibleCards.Add(card);
-        
-        return true;
-    }
-
-    private void PickCardFromWaste()
-    {
-        if(activeCard != null) return;
-        if(wastePile.Count > 0) activeCard = wastePile.Pop();
-        pickedFromWaste = true;
-    }
-
-    private void MovePointer(PointerMove value)
-    {
-        switch (value)
-        {
-            case PointerMove.Left:
-                pointer.MoveLeft();
-                break;
-            case PointerMove.Right:
-                pointer.MoveRight();
-                break;
-        }
-    }
     
-    private void DrawFromDeck(int difficulty = 1)
-    {
-        if (deck.Count == difficulty - 1)
-        {
-            var tmp = wastePile.ToList();
-
-            while (deck.Count > 0)
-            {
-                var remainingCard = deck.DrawCard()!;
-                tmp.Add(remainingCard);
-            }
-            
-            tmp.Shuffle();
-        
-            wastePile.Clear();
-        
-            foreach (var card in tmp)
-            {
-                card.IsShown = false;
-                deck.PutCard(card);
-            }
-        }
-        
-        for (int i = 0; i < difficulty && deck.Count > 0; i++)
-        {
-            var card = deck.DrawCard();
-            if (card == null) break;
-            card.IsShown = true;
-            wastePile.Push(card);
-        }
-    }
 }
