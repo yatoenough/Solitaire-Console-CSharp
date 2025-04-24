@@ -1,4 +1,6 @@
+using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
+using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
 
 namespace Solitaire.Core;
@@ -9,16 +11,37 @@ public class Game
     private readonly List<Stack<Card>> foundations = [];
     private readonly Deck deck = new();
     private readonly Stack<Card> wastePile = new();
-    
-    private readonly GameRenderer renderer = new();
     private readonly Pointer pointer = new();
+    private readonly MoveValidator validator = new();
     
     private Card? activeCard;
     private Column? activeColumn;
     private bool pickedFromWaste;
     
-
     public Game()
+    {
+        InitGame();
+    }
+    
+    public void Start()
+    {
+        while (true)
+        {
+            Console.Clear();
+            GameRenderer.Render(columns, foundations, deck, wastePile, pointer, activeCard);
+
+            var key = Console.ReadKey(true).Key;
+
+            if (key == ConsoleKey.Q) break;
+
+            HandleInput(key);
+        }
+
+        Console.Clear();
+        Console.WriteLine("Bye!");
+    }
+
+    private void InitGame()
     {
         deck.Shuffle();
 
@@ -44,68 +67,34 @@ public class Game
         for(int i = 0; i < 4; i++)
             foundations.Add(new Stack<Card>());
     }
-    
-    public void Start()
-    {
-        Update();
-        ResolveAction();
-    }
 
-    private void End()
-    {
-        Console.Clear();
-        Console.WriteLine("Bye!");
-    }
-    
-    private void Update()
-    {
-        Console.Clear();
-        
-        renderer.DisplayColumns(columns);
-        renderer.DisplayPointer(pointer);
-        renderer.DisplayPickedCard(activeCard);
-        renderer.DisplayFoundations(foundations);
-        renderer.DisplayPiles(deck, wastePile);
-    }
-
-    private void ResolveAction()
-    {
-        while (true)
+    private void HandleInput(ConsoleKey key)
+    { 
+        switch(key)
         {
-            var pressedKey = Console.ReadKey().Key;
-
-            switch (pressedKey)
-            {
-                case ConsoleKey.Q:
-                    End();
-                    return;
+            case ConsoleKey.RightArrow:
+                MovePointer(PointerMove.Right);
+                break;
+            case ConsoleKey.LeftArrow:
+                MovePointer(PointerMove.Left);
+                break;
                 
-                case ConsoleKey.RightArrow:
-                    MovePointer(PointerMove.Right);
-                    break;
-                case ConsoleKey.LeftArrow:
-                    MovePointer(PointerMove.Left);
-                    break;
+            case ConsoleKey.Enter:
+                PickOrMoveCard();
+                break;
+            case ConsoleKey.Backspace:
+                PutCardBack();
+                break;
                 
-                case ConsoleKey.Enter:
-                    PickOrMoveCard();
-                    break;
-                case ConsoleKey.Backspace:
-                    PutCardBack();
-                    break;
-                
-                case ConsoleKey.D:
-                    DrawFromDeck();
-                    break;
-                case ConsoleKey.P:
-                    PickCardFromWaste();
-                    break;
-                case ConsoleKey.F:
-                    StoreActiveCard();
-                    break;
-            }
-
-            Update();
+            case ConsoleKey.D:
+                DrawFromDeck();
+                break;
+            case ConsoleKey.P:
+                PickCardFromWaste();
+                break;
+            case ConsoleKey.F:
+                StoreCardInFoundation();
+                break;
         }
     }
 
@@ -146,34 +135,18 @@ public class Game
         activeCard = null;
     }
 
-    private void StoreActiveCard()
+    private void StoreCardInFoundation()
     {
-        if (activeCard != null)
+        if(activeCard == null) return;
+        
+        var foundation = foundations[(int)activeCard.Suit];
+        if (validator.CanMoveToFoundation(activeCard, foundation))
         {
-            var success = MoveCardToFoundation(activeCard);
-            if (!success) return;
+            foundation.Push(activeCard);
+            if (activeColumn?.VisibleCards.Count == 0)
+                activeColumn?.FlipLastHidden();
+            activeCard = null;
         }
-        
-        if(activeColumn is { VisibleCards.Count: 0 })
-            activeColumn.FlipLastHidden();
-        
-        activeCard = null;
-    }
-
-    private bool MoveCardToFoundation(Card card)
-    {
-        var foundation = foundations[(int)card.Suit];
-        
-        if (foundation.Count == 0)
-        {
-            if (card.Value != 1) return false;
-            foundation.Push(card);
-            return true;
-        }
-
-        if (card.Value != foundation.First().Value + 1) return false;
-        foundation.Push(card);
-        return true;
     }
 
     private bool MoveCardToColumn(Card card, Column destination)

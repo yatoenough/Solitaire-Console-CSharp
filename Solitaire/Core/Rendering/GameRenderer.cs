@@ -1,10 +1,19 @@
+using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 
-namespace Solitaire.Core;
+namespace Solitaire.Core.Rendering;
 
-public class GameRenderer
+public static class GameRenderer
 {
-    public void DisplayColumns(List<Column> columns)
+    public static void Render(List<Column> columns, List<Stack<Card>> foundations, Deck deck, Stack<Card> wastePile, Pointer pointer, Card? activeCard)
+    {
+        DisplayColumns(columns);
+        DisplayPointer(pointer);
+        DisplayPickedCard(activeCard);
+        DisplayFoundations(foundations);
+        DisplayPiles(deck, wastePile);
+    }
+    private static void DisplayColumns(List<Column> columns)
     {
         int maxHeight = columns.Max(c => c.HiddenCards.Count + c.VisibleCards.Count);
 
@@ -40,7 +49,7 @@ public class GameRenderer
         }
     }
 
-    public void DisplayFoundations(List<Stack<Card>> foundations)
+    private static void DisplayFoundations(List<Stack<Card>> foundations)
     {
         Console.Write("Stosy końcowe: ");
         foreach (var foundation in foundations)
@@ -60,7 +69,7 @@ public class GameRenderer
         Console.WriteLine();
     }
 
-    public void DisplayPiles(Deck deck, Stack<Card> wastePile)
+    private static void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
         Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
         
@@ -75,7 +84,7 @@ public class GameRenderer
         Console.WriteLine();
     }
 
-    public void DisplayPointer(Pointer pointer)
+    private static void DisplayPointer(Pointer pointer)
     {
         for (int column = 0; column < pointer.Position; column++)
         {
@@ -85,7 +94,7 @@ public class GameRenderer
         Console.WriteLine(pointer);
     }
 
-    public void DisplayPickedCard(Card? card)
+    private static void DisplayPickedCard(Card? card)
     {
         if (card != null)
         {

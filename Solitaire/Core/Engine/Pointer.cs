@@ -1,4 +1,4 @@
-namespace Solitaire.Core.Models;
+namespace Solitaire.Core.Engine;
 
 public class Pointer
 {
