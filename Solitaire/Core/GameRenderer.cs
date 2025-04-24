@@ -43,6 +43,8 @@ public class GameRenderer
     public void DisplayFoundations(List<Stack<Card>> foundations)
     {
         Console.ForegroundColor = ConsoleColor.White;
+        
+        Console.Write("Stosy końcowe: ");
         foreach (var foundation in foundations)
         {
             if (foundation.Count > 0)
@@ -50,10 +52,11 @@ public class GameRenderer
                 Card topCard = foundation.Peek();
                 topCard.IsShown = true;
                 Console.Write($"{topCard,-4}");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             else
             {
-                Console.Write("    ");
+                Console.Write("XX  ");
             }
         }
         
