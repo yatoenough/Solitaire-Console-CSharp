@@ -29,7 +29,6 @@ public class GameRenderer
                 {
                     if (row < hiddenCount)
                     {
-                        Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("XX  ");
                     }
                     else

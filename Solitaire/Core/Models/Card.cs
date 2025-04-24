@@ -33,6 +33,6 @@ public class Card(int value, Suit suit)
         var cardString = $"{val}{symbol}";
         Console.Write($"{cardString, -4}");
         
-        Console.ForegroundColor = ConsoleColor.White;
+        Console.ResetColor();
     }
 }
