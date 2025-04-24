@@ -27,7 +27,7 @@ public class GameRenderer
                     {
                         var visibleIndex = row - hiddenCount;
                         var card = column.VisibleCards[visibleIndex];
-                        Console.Write($"{card,-4}");
+                        card.Display();
                     }
                 }
                 else
@@ -42,8 +42,6 @@ public class GameRenderer
 
     public void DisplayFoundations(List<Stack<Card>> foundations)
     {
-        Console.ForegroundColor = ConsoleColor.White;
-        
         Console.Write("Stosy końcowe: ");
         foreach (var foundation in foundations)
         {
@@ -51,8 +49,7 @@ public class GameRenderer
             {
                 Card topCard = foundation.Peek();
                 topCard.IsShown = true;
-                Console.Write($"{topCard,-4}");
-                Console.ForegroundColor = ConsoleColor.White;
+                topCard.Display();
             }
             else
             {
@@ -65,8 +62,6 @@ public class GameRenderer
 
     public void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
-        Console.ForegroundColor = ConsoleColor.White;
-
         Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
         
         Console.WriteLine("\n");
@@ -74,7 +69,7 @@ public class GameRenderer
         
         foreach(var card in wastePile)
         {
-            Console.Write($"{card,-4}");
+            card.Display();
         }
         
         Console.WriteLine();
@@ -82,7 +77,6 @@ public class GameRenderer
 
     public void DisplayPointer(Pointer pointer)
     {
-        Console.ForegroundColor = ConsoleColor.White;
         for (int column = 0; column < pointer.Position; column++)
         {
             Console.Write("    ");
@@ -93,11 +87,13 @@ public class GameRenderer
 
     public void DisplayPickedCard(Card? card)
     {
-        Console.ForegroundColor = ConsoleColor.White;
         if (card != null)
         {
             Console.Write("Wybrana karta: ");
-            Console.WriteLine($"{card}");
+            
+            card.Display();
+            
+            Console.WriteLine();
         }
         else
         {
