@@ -11,4 +11,11 @@ public static class ListExt
             (list[i], list[j]) = (list[j], list[i]); // swap
         }
     }
+
+    public static T Pop<T>(this IList<T> list)
+    {
+        var last = list.Last();
+        list.Remove(last);
+        return last;
+    }
 }

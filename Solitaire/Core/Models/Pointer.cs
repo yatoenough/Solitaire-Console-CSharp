@@ -2,31 +2,29 @@ namespace Solitaire.Core.Models;
 
 public class Pointer
 {
-    private int _pointerPosition;
+    public int Position { get; private set; }
     
-    public int Position => _pointerPosition;
-
     public void MoveRight()
     {
-        if (_pointerPosition < 6)
+        if (Position < 6)
         {
-            _pointerPosition++;
+            Position++;
         }
         else
         {
-            _pointerPosition = 0;
+            Position = 0;
         }
     }
 
     public void MoveLeft()
     {
-        if (_pointerPosition > 0)
+        if (Position > 0)
         {
-            _pointerPosition--;
+            Position--;
         }
         else
         {
-            _pointerPosition = 6;
+            Position = 6;
         }
     }
 
