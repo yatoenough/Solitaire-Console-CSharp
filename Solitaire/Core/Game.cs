@@ -1,7 +1,6 @@
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
-using Solitaire.Core.Utils;
 
 namespace Solitaire.Core;
 
@@ -17,12 +16,11 @@ public class Game
     private List<Card>? pickedCards;
     private Column? sourceColumn;
     private bool pickedFromWaste;
-    
-    private bool isSelectingRange = false;
+
+    private bool isSelectingRange;
     private int rangeStartIndex = -1;
     
-    public Game()
-    {
+    public Game() {
         InitGame();
     }
     
@@ -127,7 +125,7 @@ public class Game
             sourceColumn = columns[pointer.Position];
             if (sourceColumn.VisibleCards.Count > 0)
             {
-                int index = SelectPickableIndex(sourceColumn);
+                int index = sourceColumn.VisibleCards.Count - 1;
                 pickedCards = sourceColumn.VisibleCards.GetRange(index, sourceColumn.VisibleCards.Count - index);
                 foreach(var card in pickedCards) card.IsSelected = false;
                 sourceColumn.VisibleCards.RemoveRange(index, pickedCards.Count);
@@ -136,11 +134,6 @@ public class Game
         }
     }
 
-    private int SelectPickableIndex(Column column)
-    {
-        return column.VisibleCards.Count - 1;
-    }
-    
     private void PickCardFromWaste()
     {
         if (pickedCards != null) return;
