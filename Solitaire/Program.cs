@@ -1,9 +1,13 @@
-﻿namespace Solitaire;
+﻿using Solitaire.Core;
 
-class Program
+namespace Solitaire;
+
+internal static class Program
 {
-    static void Main(string[] args)
+    internal static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        var game = new Game();
+        
+        game.Start();
     }
 }
