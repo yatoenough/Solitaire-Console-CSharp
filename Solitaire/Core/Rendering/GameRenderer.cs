@@ -5,36 +5,45 @@ namespace Solitaire.Core.Rendering;
 
 public class GameRenderer
 {
-    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, Card? activeCard)
+    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, List<Card>? pickedCards, int rangeStartIndex, bool isSelectingRange)
     {
-        DisplayColumns(columns);
+        DisplayColumns(columns, pointer, rangeStartIndex, isSelectingRange);
         DisplayPointer(pointer);
-        DisplayPickedCard(activeCard);
+        DisplayPickedCards(pickedCards);
         DisplayFoundations(foundations);
         DisplayPiles(deckManager.GetDeck(), deckManager.GetWaste());
     }
-    private void DisplayColumns(List<Column> columns)
+    
+    private void DisplayColumns(List<Column> columns, Pointer pointer, int rangeStartIndex, bool isSelectingRange)
     {
         int maxHeight = columns.Max(c => c.HiddenCards.Count + c.VisibleCards.Count);
 
         for (int row = 0; row < maxHeight; row++)
         {
-            foreach (var column in columns)
+            for (int colIndex = 0; colIndex < columns.Count; colIndex++)
             {
-                int hiddenCount = column.HiddenCards.Count;
-                int visibleCount = column.VisibleCards.Count;
-                int totalCount = hiddenCount + visibleCount;
+                var column = columns[colIndex];
+                int hidden = column.HiddenCards.Count;
+                int visible = column.VisibleCards.Count;
+                int total = hidden + visible;
 
-                if (row < totalCount)
+                if (row < total)
                 {
-                    if (row < hiddenCount)
+                    if (row < hidden)
                     {
+                        Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("XX  ");
                     }
                     else
                     {
-                        var visibleIndex = row - hiddenCount;
-                        var card = column.VisibleCards[visibleIndex];
+                        var cardIndex = row - hidden;
+                        var card = column.VisibleCards[cardIndex];
+
+                        if (isSelectingRange && colIndex == pointer.Position && cardIndex >= rangeStartIndex)
+                            card.IsSelected = true;
+                        else
+                            card.IsSelected = false;
+
                         card.Display();
                     }
                 }
@@ -43,7 +52,7 @@ public class GameRenderer
                     Console.Write("    ");
                 }
             }
-
+            Console.ResetColor();
             Console.WriteLine();
         }
     }
@@ -93,20 +102,15 @@ public class GameRenderer
         Console.WriteLine(pointer);
     }
 
-    private void DisplayPickedCard(Card? card)
+    private void DisplayPickedCards(List<Card>? cards)
     {
-        if (card != null)
+        Console.Write("Wybrane karty: ");
+        if (cards != null)
         {
-            Console.Write("Wybrana karta: ");
-            
-            card.Display();
-            
-            Console.WriteLine();
+            foreach (var card in cards)
+                card.Display();
         }
-        else
-        {
-            Console.WriteLine("Wybrana karta: ");
-        }
+        Console.WriteLine();
         
     }
 }

@@ -1,7 +1,6 @@
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
-using Solitaire.Core.Utils;
 
 namespace Solitaire.Core;
 
@@ -14,12 +13,14 @@ public class Game
     private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
     
-    private Card? activeCard;
-    private Column? activeColumn;
+    private List<Card>? pickedCards;
+    private Column? sourceColumn;
     private bool pickedFromWaste;
+
+    private bool isSelectingRange;
+    private int rangeStartIndex = -1;
     
-    public Game()
-    {
+    public Game() {
         InitGame();
     }
     
@@ -28,7 +29,7 @@ public class Game
         while (true)
         {
             Console.Clear();
-            renderer.Render(columns, foundations, deckManager, pointer, activeCard);
+            renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
 
             var key = Console.ReadKey(true).Key;
 
@@ -66,7 +67,13 @@ public class Game
     }
 
     private void HandleInput(ConsoleKey key)
-    { 
+    {
+        if (isSelectingRange)
+        {
+            HandleRangeSelectionInput(key);
+            return;
+        }
+        
         switch(key)
         {
             case ConsoleKey.RightArrow:
@@ -92,71 +99,129 @@ public class Game
             case ConsoleKey.F:
                 StoreCardInFoundation();
                 break;
+            case ConsoleKey.M:
+                EnterRangeSelection();
+                break;
         }
     }
-
+    
     private void HandleEnterKey()
     {
-        if (activeCard != null)
+        if (pickedCards != null)
         {
             var target = columns[pointer.Position];
-            if (validator.CanPlaceOnColumn(activeCard, target))
+            if (validator.CanPlaceOnColumn(pickedCards.First(), target))
             {
-                target.VisibleCards.Add(activeCard);
-                if (activeColumn?.VisibleCards.Count == 0)
-                    activeColumn?.FlipLastHidden();
+                target.VisibleCards.AddRange(pickedCards);
+                if (sourceColumn?.VisibleCards.Count == 0)
+                    sourceColumn.FlipLastHidden();
 
-                activeCard = null;
+                pickedCards = null;
+                sourceColumn = null;
             }
         }
         else
         {
-            activeColumn = columns[pointer.Position];
-            if (activeColumn.VisibleCards.Count > 0)
+            sourceColumn = columns[pointer.Position];
+            if (sourceColumn.VisibleCards.Count > 0)
             {
-                activeCard = activeColumn.VisibleCards.Pop();
+                int index = sourceColumn.VisibleCards.Count - 1;
+                pickedCards = sourceColumn.VisibleCards.GetRange(index, sourceColumn.VisibleCards.Count - index);
+                foreach(var card in pickedCards) card.IsSelected = false;
+                sourceColumn.VisibleCards.RemoveRange(index, pickedCards.Count);
                 pickedFromWaste = false;
             }
         }
     }
-    
+
     private void PickCardFromWaste()
     {
-        if (activeCard != null) return;
+        if (pickedCards != null) return;
 
         var card = deckManager.PickFromWaste();
-        
         if (card == null) return;
-        
-        activeCard = card;
+
+        pickedCards = new List<Card> { card };
         pickedFromWaste = true;
     }
 
     private void PutCardBack()
     {
-        if (activeCard == null) return;
+        if (pickedCards == null) return;
 
         if (pickedFromWaste)
-            deckManager.ReturnToWaste(activeCard);
+        {
+            foreach (var card in pickedCards)
+                deckManager.ReturnToWaste(card);
+        }
         else
-            activeColumn?.VisibleCards.Add(activeCard);
+            sourceColumn?.VisibleCards.AddRange(pickedCards);
 
-        activeCard = null;
+        pickedCards = null;
+        sourceColumn = null;
         pickedFromWaste = false;
     }
 
     private void StoreCardInFoundation()
     {
-        if(activeCard == null) return;
-        
-        var foundation = foundations[(int)activeCard.Suit];
-        if (validator.CanMoveToFoundation(activeCard, foundation))
+        if (pickedCards == null || pickedCards.Count != 1) return;
+
+        var card = pickedCards.First();
+        var foundation = foundations[(int)card.Suit];
+
+        if (validator.CanMoveToFoundation(card, foundation))
         {
-            foundation.Push(activeCard);
-            if (activeColumn?.VisibleCards.Count == 0)
-                activeColumn?.FlipLastHidden();
-            activeCard = null;
+            foundation.Push(card);
+
+            if (sourceColumn?.VisibleCards.Count == 0)
+                sourceColumn.FlipLastHidden();
+
+            pickedCards = null;
+            sourceColumn = null;
         }
     }
     
+    private void EnterRangeSelection()
+    {
+        var column = columns[pointer.Position];
+        if (column.VisibleCards.Count == 0 || pickedCards != null) return;
+
+        isSelectingRange = true;
+        rangeStartIndex = column.VisibleCards.Count - 1;
+    }
+    
+    private void HandleRangeSelectionInput(ConsoleKey key)
+    {
+        var column = columns[pointer.Position];
+        int maxIndex = column.VisibleCards.Count - 1;
+
+        switch (key)
+        {
+            case ConsoleKey.UpArrow:
+                if (rangeStartIndex > 0)
+                    rangeStartIndex--;
+                break;
+            case ConsoleKey.DownArrow:
+                if (rangeStartIndex < maxIndex)
+                    rangeStartIndex++;
+                break;
+            case ConsoleKey.Enter:
+                PickRange(column, rangeStartIndex);
+                isSelectingRange = false;
+                break;
+            case ConsoleKey.Backspace:
+                isSelectingRange = false;
+                rangeStartIndex = -1;
+                break;
+        }
+    }
+    
+    private void PickRange(Column column, int startIndex)
+    {
+        pickedCards = column.VisibleCards.GetRange(startIndex, column.VisibleCards.Count - startIndex);
+        column.VisibleCards.RemoveRange(startIndex, pickedCards.Count);
+        sourceColumn = column;
+        pickedFromWaste = false;
+    }
+
 }
