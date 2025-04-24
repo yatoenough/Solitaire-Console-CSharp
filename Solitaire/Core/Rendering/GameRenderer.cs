@@ -5,11 +5,11 @@ namespace Solitaire.Core.Rendering;
 
 public class GameRenderer
 {
-    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, Card? activeCard)
+    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, List<Card>? pickedCards)
     {
         DisplayColumns(columns);
         DisplayPointer(pointer);
-        DisplayPickedCard(activeCard);
+        DisplayPickedCards(pickedCards);
         DisplayFoundations(foundations);
         DisplayPiles(deckManager.GetDeck(), deckManager.GetWaste());
     }
@@ -93,20 +93,15 @@ public class GameRenderer
         Console.WriteLine(pointer);
     }
 
-    private void DisplayPickedCard(Card? card)
+    private void DisplayPickedCards(List<Card>? cards)
     {
-        if (card != null)
+        Console.Write("Wybrane karty: ");
+        if (cards != null)
         {
-            Console.Write("Wybrana karta: ");
-            
-            card.Display();
-            
-            Console.WriteLine();
+            foreach (var card in cards)
+                card.Display();
         }
-        else
-        {
-            Console.WriteLine("Wybrana karta: ");
-        }
+        Console.WriteLine();
         
     }
 }

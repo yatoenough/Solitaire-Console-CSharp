@@ -14,8 +14,8 @@ public class Game
     private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
     
-    private Card? activeCard;
-    private Column? activeColumn;
+    private List<Card>? pickedCards;
+    private Column? sourceColumn;
     private bool pickedFromWaste;
     
     public Game()
@@ -28,7 +28,7 @@ public class Game
         while (true)
         {
             Console.Clear();
-            renderer.Render(columns, foundations, deckManager, pointer, activeCard);
+            renderer.Render(columns, foundations, deckManager, pointer, pickedCards);
 
             var key = Console.ReadKey(true).Key;
 
@@ -97,65 +97,81 @@ public class Game
 
     private void HandleEnterKey()
     {
-        if (activeCard != null)
+        if (pickedCards != null)
         {
             var target = columns[pointer.Position];
-            if (validator.CanPlaceOnColumn(activeCard, target))
+            if (validator.CanPlaceOnColumn(pickedCards.First(), target))
             {
-                target.VisibleCards.Add(activeCard);
-                if (activeColumn?.VisibleCards.Count == 0)
-                    activeColumn?.FlipLastHidden();
+                target.VisibleCards.AddRange(pickedCards);
+                if (sourceColumn?.VisibleCards.Count == 0)
+                    sourceColumn.FlipLastHidden();
 
-                activeCard = null;
+                pickedCards = null;
+                sourceColumn = null;
             }
         }
         else
         {
-            activeColumn = columns[pointer.Position];
-            if (activeColumn.VisibleCards.Count > 0)
+            sourceColumn = columns[pointer.Position];
+            if (sourceColumn.VisibleCards.Count > 0)
             {
-                activeCard = activeColumn.VisibleCards.Pop();
+                int index = SelectPickableIndex(sourceColumn);
+                pickedCards = sourceColumn.VisibleCards.GetRange(index, sourceColumn.VisibleCards.Count - index);
+                sourceColumn.VisibleCards.RemoveRange(index, pickedCards.Count);
                 pickedFromWaste = false;
             }
         }
     }
+
+    private int SelectPickableIndex(Column column)
+    {
+        return column.VisibleCards.Count - 1;
+    }
     
     private void PickCardFromWaste()
     {
-        if (activeCard != null) return;
+        if (pickedCards != null) return;
 
         var card = deckManager.PickFromWaste();
-        
         if (card == null) return;
-        
-        activeCard = card;
+
+        pickedCards = new List<Card> { card };
         pickedFromWaste = true;
     }
 
     private void PutCardBack()
     {
-        if (activeCard == null) return;
+        if (pickedCards == null) return;
 
         if (pickedFromWaste)
-            deckManager.ReturnToWaste(activeCard);
+        {
+            foreach (var card in pickedCards)
+                deckManager.ReturnToWaste(card);
+        }
         else
-            activeColumn?.VisibleCards.Add(activeCard);
+            sourceColumn?.VisibleCards.AddRange(pickedCards);
 
-        activeCard = null;
+        pickedCards = null;
+        sourceColumn = null;
         pickedFromWaste = false;
     }
 
     private void StoreCardInFoundation()
     {
-        if(activeCard == null) return;
-        
-        var foundation = foundations[(int)activeCard.Suit];
-        if (validator.CanMoveToFoundation(activeCard, foundation))
+        if (pickedCards == null || pickedCards.Count != 1) return;
+
+        var card = pickedCards.First();
+        var foundation = foundations[(int)card.Suit];
+
+        if (validator.CanMoveToFoundation(card, foundation))
         {
-            foundation.Push(activeCard);
-            if (activeColumn?.VisibleCards.Count == 0)
-                activeColumn?.FlipLastHidden();
-            activeCard = null;
+            foundation.Push(card);
+
+            if (sourceColumn?.VisibleCards.Count == 0)
+                sourceColumn.FlipLastHidden();
+
+            pickedCards = null;
+            sourceColumn = null;
         }
     }
     
