@@ -11,13 +11,20 @@ public class MoveManager(DeckManager deckManager, List<Column> columns)
     public void RegisterMove(string move)
     {
         moveList.Add(move);
+        
+        if (moveList.Count > 3)
+        {
+            moveList.RemoveAt(0);
+        }
     }
-
+    
     public void DiscardLastMove()
     {
         if (moveList.Count <= 0) return;
+
         var lastMove = moveList.Last();
         ParseMove(lastMove);
+        moveList.Remove(lastMove);
     }
 
     private void ParseMove(string move)
