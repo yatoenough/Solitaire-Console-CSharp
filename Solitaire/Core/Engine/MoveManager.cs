@@ -1,0 +1,36 @@
+using Solitaire.Core.Models;
+
+namespace Solitaire.Core.Engine;
+
+public class MoveManager(DeckManager deckManager, List<Column> columns)
+{
+    private List<string> moveList = [];
+    private DeckManager deckManager = deckManager;
+    private List<Column> columns = columns;
+
+    public void RegisterMove(string move)
+    {
+        moveList.Add(move);
+    }
+
+    public void DiscardLastMove()
+    {
+        var lastMove = moveList.Last();
+
+        ParseMove(lastMove);
+    }
+
+    private void ParseMove(string move)
+    {
+        foreach (var character in move)
+        {
+            switch (character)
+            {
+                case 'd':
+                    var drawedCard = deckManager.PickFromWaste();
+                    deckManager.ReturnToDeck(drawedCard!);
+                    break;
+            }
+        }
+    }
+}

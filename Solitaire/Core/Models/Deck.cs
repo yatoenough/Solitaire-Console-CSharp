@@ -36,7 +36,7 @@ public class Deck
 
     public void PutCard(Card card)
     {
-        _cards.Add(card);
+        _cards.Insert(0, card);
     }
     
 }
