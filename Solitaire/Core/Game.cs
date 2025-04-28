@@ -12,6 +12,7 @@ public class Game
     private readonly GameRenderer renderer = new();
     private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
+    private readonly MoveManager moveManager;
     
     private List<Card>? pickedCards;
     private Column? sourceColumn;
@@ -22,6 +23,7 @@ public class Game
     
     public Game() {
         InitGame();
+        moveManager = new MoveManager(deckManager, columns);
     }
     
     public void Start()
@@ -91,6 +93,7 @@ public class Game
                 break;
                 
             case ConsoleKey.D:
+                moveManager.RegisterMove("d");
                 deckManager.DrawCardToWaste();
                 break;
             case ConsoleKey.P:
@@ -101,6 +104,9 @@ public class Game
                 break;
             case ConsoleKey.M:
                 EnterRangeSelection();
+                break;
+            case ConsoleKey.B:
+                moveManager.DiscardLastMove();
                 break;
         }
     }

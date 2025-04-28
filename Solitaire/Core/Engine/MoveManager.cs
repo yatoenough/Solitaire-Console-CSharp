@@ -15,8 +15,8 @@ public class MoveManager(DeckManager deckManager, List<Column> columns)
 
     public void DiscardLastMove()
     {
+        if (moveList.Count <= 0) return;
         var lastMove = moveList.Last();
-
         ParseMove(lastMove);
     }
 
@@ -27,8 +27,8 @@ public class MoveManager(DeckManager deckManager, List<Column> columns)
             switch (character)
             {
                 case 'd':
-                    var drawedCard = deckManager.PickFromWaste();
-                    deckManager.ReturnToDeck(drawedCard!);
+                    var drawnCard = deckManager.PickFromWaste();
+                    if(drawnCard != null) deckManager.ReturnToDeck(drawnCard);
                     break;
             }
         }
