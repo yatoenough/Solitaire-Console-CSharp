@@ -31,7 +31,7 @@ public class GameRenderer
                 {
                     if (row < hidden)
                     {
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
                         Console.Write("XX  ");
                     }
                     else
