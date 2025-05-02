@@ -33,6 +33,7 @@ public class DeckManager
     public void ReturnToWaste(Card card) => waste.Push(card);
     public Stack<Card> GetWaste() => waste;
     public Deck GetDeck() => deck;
+    public void ReturnToDeck(Card card) => deck.PutCard(card);
     
     private void RecycleWasteToDeck()
     {
