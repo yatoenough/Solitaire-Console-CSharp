@@ -3,10 +3,9 @@ using Solitaire.Core.Utils;
 
 namespace Solitaire.Core.Engine;
 
-public class MoveManager(DeckManager deckManager, List<Column> columns)
+public class MoveManager(DeckManager deckManager, List<Column> columns, List<Stack<Card>> foundations)
 {
     private readonly List<Move> moveHistory = [];
-    private List<Column> columns = columns;
 
     public void RegisterMove(Move move)
     {
@@ -43,6 +42,7 @@ public class MoveManager(DeckManager deckManager, List<Column> columns)
                 break;
 
             case MoveType.FromColumnToColumn:
+            {
                 var sourceCol = columns[move.SourceIndex];
                 var destCol = columns[move.DestinationIndex];
                 int count = move.Cards.Count;
@@ -55,12 +55,28 @@ public class MoveManager(DeckManager deckManager, List<Column> columns)
                 
                 sourceCol.VisibleCards.AddRange(move.Cards);
                 break;
+            }
 
             case MoveType.FromColumnToFoundation:
+            {
+                var cardInFoundation = foundations[(int)move.Cards[0].Suit].Pop();
+                var column = columns[move.SourceIndex];
+                
+                var lastFlippedCard = column.VisibleCards.Pop();
+                lastFlippedCard.IsShown = false;
+                column.HiddenCards.Push(lastFlippedCard);
+                
+                column.VisibleCards.Add(cardInFoundation);
                 break;
-
+            }
+                
             case MoveType.FromWasteToFoundation:
+            {
+                var cardInFoundation = foundations[(int)move.Cards[0].Suit].Pop();
+                deckManager.ReturnToWaste(cardInFoundation);
                 break;
+            }
+                
         }
     }
 }

@@ -24,7 +24,7 @@ public class Game
     
     public Game() {
         InitGame();
-        moveManager = new MoveManager(deckManager, columns);
+        moveManager = new MoveManager(deckManager, columns, foundations);
     }
     
     public void Start()
@@ -204,6 +204,28 @@ public class Game
 
             if (sourceColumn?.VisibleCards.Count == 0)
                 sourceColumn.FlipLastHidden();
+            
+            Move move;
+
+            if (pickedFromWaste)
+            {
+                move = new Move
+                {
+                    Type = MoveType.FromWasteToFoundation,
+                    Cards = pickedCards,
+                };
+            }
+            else
+            {
+                move = new Move
+                {
+                    Type = MoveType.FromColumnToFoundation,
+                    Cards = pickedCards,
+                    SourceIndex = columns.IndexOf(sourceColumn),
+                };
+            }
+            
+            moveManager.RegisterMove(move);
 
             pickedCards = null;
             sourceColumn = null;
