@@ -6,8 +6,12 @@ internal static class Program
 {
     internal static void Main(string[] args)
     {
-        var game = new Game();
         
+        
+        int difficulty = 1;
+        
+        difficulty = Console.ReadKey().KeyChar == '1' ? 1 : 3;
+        var game = new Game(difficulty);
         game.Start();
     }
 }

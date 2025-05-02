@@ -14,6 +14,7 @@ public class Game
     private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
     private MoveManager moveManager;
+    private int difficulty;
     
     private List<Card>? pickedCards;
     private Column? sourceColumn;
@@ -22,7 +23,8 @@ public class Game
     private bool isSelectingRange;
     private int rangeStartIndex = -1;
     
-    public Game() {
+    public Game(int difficulty = 1) {
+        this.difficulty = difficulty;
         InitGame();
         moveManager = new MoveManager(deckManager, columns, foundations);
     }
@@ -95,7 +97,7 @@ public class Game
                 
             case ConsoleKey.D:
                 moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
-                deckManager.DrawCardToWaste();
+                deckManager.DrawCardToWaste(difficulty);
                 break;
             case ConsoleKey.P:
                 PickCardFromWaste();
