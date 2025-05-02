@@ -4,7 +4,7 @@ namespace Solitaire.Core.Models;
 
 public class Deck
 {
-    private List<Card> _cards = new List<Card>();
+    private List<Card> cards = new List<Card>();
 
     public Deck()
     {
@@ -12,31 +12,31 @@ public class Deck
         {
             for (int i = 1; i <= 13; i++)
             {
-                _cards.Add(new Card(i, suit));
+                cards.Add(new Card(i, suit));
             }
         }
     }
     
-    public int Count => _cards.Count;
+    public int Count => cards.Count;
     
     public void Shuffle()
     {
-        _cards.Shuffle();
+        cards.Shuffle();
     }
     
     public Card? DrawCard()
     {
-        if (_cards.Count == 0) return null;
+        if (cards.Count == 0) return null;
         
-        Card card = _cards[0];
-        _cards.RemoveAt(0);
+        Card card = cards[0];
+        cards.RemoveAt(0);
         
         return card;
     }
 
     public void PutCard(Card card)
     {
-        _cards.Add(card);
+        cards.Insert(0, card);
     }
     
 }

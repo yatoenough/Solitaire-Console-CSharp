@@ -1,6 +1,7 @@
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
+using Solitaire.Core.Utils;
 
 namespace Solitaire.Core;
 
@@ -12,6 +13,7 @@ public class Game
     private readonly GameRenderer renderer = new();
     private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
+    private MoveManager moveManager;
     
     private List<Card>? pickedCards;
     private Column? sourceColumn;
@@ -22,6 +24,7 @@ public class Game
     
     public Game() {
         InitGame();
+        moveManager = new MoveManager(deckManager, columns, foundations);
     }
     
     public void Start()
@@ -91,6 +94,7 @@ public class Game
                 break;
                 
             case ConsoleKey.D:
+                moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
                 deckManager.DrawCardToWaste();
                 break;
             case ConsoleKey.P:
@@ -101,6 +105,9 @@ public class Game
                 break;
             case ConsoleKey.M:
                 EnterRangeSelection();
+                break;
+            case ConsoleKey.B:
+                moveManager.UndoLastMove();
                 break;
         }
     }
@@ -116,6 +123,30 @@ public class Game
                 if (sourceColumn?.VisibleCards.Count == 0)
                     sourceColumn.FlipLastHidden();
 
+                Move move;
+
+                if (pickedFromWaste)
+                {
+                    move = new Move
+                    {
+                        Type = MoveType.FromWasteToColumn,
+                        Cards = pickedCards,
+                        DestinationIndex = pointer.Position,
+                    };
+                }
+                else
+                {
+                    move = new Move
+                    {
+                        Type = MoveType.FromColumnToColumn,
+                        Cards = pickedCards,
+                        SourceIndex = columns.IndexOf(sourceColumn),
+                        DestinationIndex = pointer.Position,
+                    };
+                }
+                
+                moveManager.RegisterMove(move);
+
                 pickedCards = null;
                 sourceColumn = null;
             }
@@ -125,10 +156,8 @@ public class Game
             sourceColumn = columns[pointer.Position];
             if (sourceColumn.VisibleCards.Count > 0)
             {
-                int index = sourceColumn.VisibleCards.Count - 1;
-                pickedCards = sourceColumn.VisibleCards.GetRange(index, sourceColumn.VisibleCards.Count - index);
-                foreach(var card in pickedCards) card.IsSelected = false;
-                sourceColumn.VisibleCards.RemoveRange(index, pickedCards.Count);
+                var card = sourceColumn.VisibleCards.Pop();
+                pickedCards = [card];
                 pickedFromWaste = false;
             }
         }
@@ -141,7 +170,7 @@ public class Game
         var card = deckManager.PickFromWaste();
         if (card == null) return;
 
-        pickedCards = new List<Card> { card };
+        pickedCards = [card];
         pickedFromWaste = true;
     }
 
@@ -175,6 +204,28 @@ public class Game
 
             if (sourceColumn?.VisibleCards.Count == 0)
                 sourceColumn.FlipLastHidden();
+            
+            Move move;
+
+            if (pickedFromWaste)
+            {
+                move = new Move
+                {
+                    Type = MoveType.FromWasteToFoundation,
+                    Cards = pickedCards,
+                };
+            }
+            else
+            {
+                move = new Move
+                {
+                    Type = MoveType.FromColumnToFoundation,
+                    Cards = pickedCards,
+                    SourceIndex = columns.IndexOf(sourceColumn),
+                };
+            }
+            
+            moveManager.RegisterMove(move);
 
             pickedCards = null;
             sourceColumn = null;

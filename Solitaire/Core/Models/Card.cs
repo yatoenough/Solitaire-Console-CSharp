@@ -31,7 +31,7 @@ public class Card(int value, Suit suit)
 
         Console.ForegroundColor = Color;
 
-        if (IsSelected) Console.BackgroundColor = ConsoleColor.DarkYellow;
+        if (IsSelected) Console.BackgroundColor = ConsoleColor.DarkGray;
 
         var cardString = $"{val}{symbol}";
         Console.Write($"{cardString, -4}");
