@@ -1,3 +1,4 @@
+using Figgle;
 using Solitaire.Core.Menu.Options;
 
 namespace Solitaire.Core.Menu;
@@ -13,12 +14,13 @@ public class MainMenu : Menu
 
     public override void Display(int pickedOption)
     {
-        Console.WriteLine("Solitaire");
+        Console.WriteLine(FiggleFonts.Slant.Render("Solitaire"));
+        Console.WriteLine("Crafted by Nikita Shyshkin [https://github.com/yatoenough]\n");
 
         for (int i = 0; i < OptionsCount; i++)
         {
             if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine(options[i].GetLabel());
+            Console.WriteLine($"{i + 1}. {options[i].GetLabel()}");
             Console.ResetColor();
         }
         
