@@ -42,9 +42,6 @@ public class Game
 
             HandleInput(key);
         }
-
-        Console.Clear();
-        Console.WriteLine("Bye!");
     }
 
     private void InitGame()

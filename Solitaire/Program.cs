@@ -1,62 +1,44 @@
 ﻿using Solitaire.Core;
+using Solitaire.Core.Menu;
 
 namespace Solitaire;
 
 internal static class Program
 {
-
-    private static Dictionary<int, string> menuItems = new()
+    static Program()
     {
-        {1, "Play"},
-        {2, "Quit"}
-    };
+        Console.Title = "Solitaire";
+    }
     
     private static void Main(string[] args)
     {
-        Console.Title = "Solitaire";
-        DisplayMenu();
-        var pickedOption = Console.ReadKey(true).KeyChar;
-        
-        int difficulty = 1;
+        var mainMenu = new MainMenu();
+        var menuOptionPicker = new MenuOptionPicker(mainMenu.OptionsCount);
 
-        switch (pickedOption)
+        while (true)
         {
-            case '1':
-                DisplayDifficulty();
-                var difficultyKeyChar = Console.ReadKey(true).KeyChar;
-                if (difficultyKeyChar == '2')
+            Console.Clear();
+            mainMenu.Display(menuOptionPicker.PickedOption);
+            
+            var key = Console.ReadKey(true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
                 {
-                    difficulty = 3;
+                    menuOptionPicker.OnUpArrowPressed();
+                    break;
                 }
-                break;
-            case '2':
-                Console.Clear();
-                Console.WriteLine("Bye!");
-                return;
+                case ConsoleKey.DownArrow:
+                {
+                    menuOptionPicker.OnDownArrowPressed();
+                    break;
+                }
+                case ConsoleKey.Enter:
+                {
+                    mainMenu.Confirm(menuOptionPicker.PickedOption);
+                    break;
+                }
+            }
         }
-        
-        var game = new Game(difficulty);
-        game.Start();
-    }
-    
-    private static void DisplayMenu()
-    {
-        Console.Clear();
-        Console.WriteLine("Solitaire");
-
-        for (int i = 0; i < menuItems.Count; i++)
-        {
-            Console.WriteLine($"{i + 1}. {menuItems[i+1]}");
-        }
-        
-    }
-    
-    private static void DisplayDifficulty()
-    {
-        Console.Clear();
-        Console.WriteLine("Solitaire");
-
-        Console.WriteLine("1. Easy");
-        Console.WriteLine("2. Hard");
     }
 }
