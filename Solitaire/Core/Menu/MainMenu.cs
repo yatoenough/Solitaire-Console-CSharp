@@ -3,8 +3,10 @@ namespace Solitaire.Core.Menu;
 public class MainMenu
 {
     private readonly List<IMenuOption> options = [
-        new StartGameMenuOption()
+        new StartGameMenuOption(),
+        new QuitMenuOption()
     ];
+    
     public int OptionsCount => options.Count;
     
     public void Display(int pickedOption)

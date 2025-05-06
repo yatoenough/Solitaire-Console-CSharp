@@ -10,7 +10,7 @@ internal static class Program
         Console.Title = "Solitaire";
     }
     
-    private static void Main(string[] args)
+    private static void Main()
     {
         var mainMenu = new MainMenu();
         var menuOptionPicker = new MenuOptionPicker(mainMenu.OptionsCount);
