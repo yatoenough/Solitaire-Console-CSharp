@@ -30,10 +30,11 @@ public class MoveManager(DeckManager deckManager, List<Column> columns, List<Sta
         switch (move.Type)
         {
             case MoveType.DrawFromDeck:
-                //TODO: Adapt for difficulty
-                var card = deckManager.PickFromWaste();
-                if (card != null)
-                    deckManager.ReturnToDeck(card);
+                for (int i = 0; i < Settings.Difficulty; i++)
+                {
+                    var card = deckManager.PickFromWaste();
+                    if (card != null) deckManager.ReturnToDeck(card);
+                }
                 break;
 
             case MoveType.FromWasteToColumn:
