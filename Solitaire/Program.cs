@@ -1,13 +1,15 @@
-﻿using Solitaire.Core;
-using Solitaire.Core.Menu;
+﻿using System.Text;
+using Solitaire.Menu;
 
 namespace Solitaire;
 
 internal static class Program
 {
+    
     static Program()
     {
         Console.Title = "Solitaire";
+        Console.OutputEncoding = Encoding.UTF8;
     }
     
     private static void Main()

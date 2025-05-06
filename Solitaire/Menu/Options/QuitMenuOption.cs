@@ -1,4 +1,4 @@
-namespace Solitaire.Core.Menu.Options;
+namespace Solitaire.Menu.Options;
 
 public class QuitMenuOption : IMenuOption
 {
@@ -10,7 +10,6 @@ public class QuitMenuOption : IMenuOption
     public void Execute()
     {
         Console.Clear();
-        Console.WriteLine("Bye!");
         Environment.Exit(0); 
     }
 }

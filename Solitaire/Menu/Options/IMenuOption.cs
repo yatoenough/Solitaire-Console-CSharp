@@ -1,4 +1,4 @@
-namespace Solitaire.Core.Menu.Options;
+namespace Solitaire.Menu.Options;
 
 public interface IMenuOption
 {

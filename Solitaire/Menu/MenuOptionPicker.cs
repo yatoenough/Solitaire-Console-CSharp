@@ -1,4 +1,4 @@
-namespace Solitaire.Core.Menu;
+namespace Solitaire.Menu;
 
 public class MenuOptionPicker(int limit)
 {

@@ -1,4 +1,7 @@
-namespace Solitaire.Core.Menu.Options;
+using Solitaire.Config;
+using Solitaire.Core;
+
+namespace Solitaire.Menu.Options;
 
 public class StartGameMenuOption : IMenuOption
 {

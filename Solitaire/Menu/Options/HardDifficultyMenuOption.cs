@@ -1,4 +1,6 @@
-namespace Solitaire.Core.Menu.Options;
+using Solitaire.Config;
+
+namespace Solitaire.Menu.Options;
 
 public class HardDifficultyMenuOption : IMenuOption
 {

@@ -1,4 +1,4 @@
-namespace Solitaire.Core;
+namespace Solitaire.Config;
 
 public static class Settings
 {
