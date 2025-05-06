@@ -1,4 +1,4 @@
-namespace Solitaire.Core.Menu;
+namespace Solitaire.Core.Menu.Options;
 
 public class QuitMenuOption : IMenuOption
 {
