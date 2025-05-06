@@ -10,10 +10,8 @@ internal static class Program
         {1, "Play"},
         {2, "Quit"}
     };
-
-    private static int selectedOption = 0;
     
-    internal static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Console.Title = "Solitaire";
         DisplayMenu();
@@ -36,7 +34,6 @@ internal static class Program
                 Console.WriteLine("Bye!");
                 return;
         }
-        
         
         var game = new Game(difficulty);
         game.Start();
