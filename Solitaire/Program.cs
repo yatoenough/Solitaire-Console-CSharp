@@ -1,17 +1,46 @@
-﻿using Solitaire.Core;
+﻿using System.Text;
+using Solitaire.Menu;
 
 namespace Solitaire;
 
 internal static class Program
 {
-    internal static void Main(string[] args)
+    
+    static Program()
     {
-        
-        
-        int difficulty = 1;
-        
-        difficulty = Console.ReadKey().KeyChar == '1' ? 1 : 3;
-        var game = new Game(difficulty);
-        game.Start();
+        Console.Title = "Solitaire";
+        Console.OutputEncoding = Encoding.UTF8;
+    }
+    
+    private static void Main()
+    {
+        var mainMenu = new MainMenu();
+        var menuOptionPicker = new MenuOptionPicker(mainMenu.OptionsCount);
+
+        while (true)
+        {
+            Console.Clear();
+            mainMenu.Display(menuOptionPicker.PickedOption);
+            
+            var key = Console.ReadKey(true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                {
+                    menuOptionPicker.OnUpArrowPressed();
+                    break;
+                }
+                case ConsoleKey.DownArrow:
+                {
+                    menuOptionPicker.OnDownArrowPressed();
+                    break;
+                }
+                case ConsoleKey.Enter:
+                {
+                    mainMenu.Confirm(menuOptionPicker.PickedOption);
+                    break;
+                }
+            }
+        }
     }
 }

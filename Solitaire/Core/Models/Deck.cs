@@ -4,7 +4,7 @@ namespace Solitaire.Core.Models;
 
 public class Deck
 {
-    private List<Card> cards = new List<Card>();
+    private List<Card> cards = new();
 
     public Deck()
     {

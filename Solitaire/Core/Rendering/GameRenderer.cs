@@ -24,8 +24,7 @@ public class GameRenderer
             {
                 var column = columns[colIndex];
                 int hidden = column.HiddenCards.Count;
-                int visible = column.VisibleCards.Count;
-                int total = hidden + visible;
+                int total = column.CardsCount;
 
                 if (row < total)
                 {
