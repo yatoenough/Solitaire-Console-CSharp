@@ -1,10 +1,12 @@
-namespace Solitaire.Menu.Options;
+using Solitaire.I18n;
+
+namespace Solitaire.Menu.Options.Main;
 
 public class QuitMenuOption : IMenuOption
 {
     public string GetLabel()
     {
-        return "Quit";
+        return GameStrings.option_quit;
     }
 
     public void Execute()

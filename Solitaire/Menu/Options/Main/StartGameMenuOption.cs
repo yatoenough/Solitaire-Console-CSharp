@@ -1,29 +1,25 @@
-﻿using System.Globalization;
-using System.Text;
 using Solitaire.Config;
+using Solitaire.Core;
 using Solitaire.I18n;
-using Solitaire.Menu;
 
-namespace Solitaire;
+namespace Solitaire.Menu.Options.Main;
 
-internal static class Program
+public class StartGameMenuOption : IMenuOption
 {
-    
-    static Program()
+    public string GetLabel()
     {
-        Console.Title = GameStrings.app_name;
-        Console.OutputEncoding = Encoding.UTF8;
+        return GameStrings.option_play;
     }
-    
-    private static void Main()
+
+    public void Execute()
     {
-        var mainMenu = new MainMenu();
-        var menuOptionPicker = new MenuOptionPicker(mainMenu.OptionsCount);
+        var difficultyMenu = new DifficultyMenu();
+        var menuOptionPicker = new MenuOptionPicker(difficultyMenu.OptionsCount);
 
         while (true)
         {
             Console.Clear();
-            mainMenu.Display(menuOptionPicker.PickedOption);
+            difficultyMenu.Display(menuOptionPicker.PickedOption);
             
             var key = Console.ReadKey(true).Key;
             switch (key)
@@ -40,8 +36,12 @@ internal static class Program
                 }
                 case ConsoleKey.Enter:
                 {
-                    mainMenu.Confirm(menuOptionPicker.PickedOption);
-                    break;
+                    difficultyMenu.Confirm(menuOptionPicker.PickedOption);
+                    
+                    var game = new Game(Settings.Difficulty);
+                    game.Start();
+                    
+                    return;
                 }
             }
         }

@@ -1,5 +1,8 @@
+using System.Resources;
 using Figgle;
+using Solitaire.I18n;
 using Solitaire.Menu.Options;
+using Solitaire.Menu.Options.Main;
 
 namespace Solitaire.Menu;
 
@@ -7,6 +10,7 @@ public class MainMenu : Menu
 {
     private readonly List<IMenuOption> options = [
         new StartGameMenuOption(),
+        new LanguageMenuOption(),
         new QuitMenuOption()
     ];
     
@@ -14,8 +18,9 @@ public class MainMenu : Menu
 
     public override void Display(int pickedOption)
     {
-        Console.WriteLine(FiggleFonts.Slant.Render("Solitaire"));
-        Console.WriteLine("Crafted by Nikita Shyshkin [https://github.com/yatoenough]\n");
+        Console.WriteLine(FiggleFonts.Slant.Render(GameStrings.app_name));
+        
+        Console.WriteLine($"{GameStrings.createdby} [https://github.com/yatoenough]");
 
         for (int i = 0; i < OptionsCount; i++)
         {

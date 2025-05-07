@@ -1,12 +1,13 @@
 using Solitaire.Config;
+using Solitaire.I18n;
 
-namespace Solitaire.Menu.Options;
+namespace Solitaire.Menu.Options.DifficultyOptions;
 
 public class HardDifficultyMenuOption : IMenuOption
 {
     public string GetLabel()
     {
-        return "Hard";
+        return GameStrings.difficulty_hard;
     }
 
     public void Execute()

@@ -1,24 +1,23 @@
-using Solitaire.Config;
-using Solitaire.Core;
+using Solitaire.I18n;
 
-namespace Solitaire.Menu.Options;
+namespace Solitaire.Menu.Options.Main;
 
-public class StartGameMenuOption : IMenuOption
+public class LanguageMenuOption : IMenuOption
 {
     public string GetLabel()
     {
-        return "Play";
+        return GameStrings.language_label;
     }
 
     public void Execute()
     {
-        var difficultyMenu = new DifficultyMenu();
-        var menuOptionPicker = new MenuOptionPicker(difficultyMenu.OptionsCount);
+        var languageMenu = new LanguageMenu();
+        var menuOptionPicker = new MenuOptionPicker(languageMenu.OptionsCount);
 
         while (true)
         {
             Console.Clear();
-            difficultyMenu.Display(menuOptionPicker.PickedOption);
+            languageMenu.Display(menuOptionPicker.PickedOption);
             
             var key = Console.ReadKey(true).Key;
             switch (key)
@@ -35,11 +34,7 @@ public class StartGameMenuOption : IMenuOption
                 }
                 case ConsoleKey.Enter:
                 {
-                    difficultyMenu.Confirm(menuOptionPicker.PickedOption);
-                    
-                    var game = new Game(Settings.Difficulty);
-                    game.Start();
-                    
+                    languageMenu.Confirm(menuOptionPicker.PickedOption);
                     return;
                 }
             }
