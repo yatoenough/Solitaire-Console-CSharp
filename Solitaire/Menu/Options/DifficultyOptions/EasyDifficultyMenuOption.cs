@@ -1,7 +1,7 @@
 using Solitaire.Config;
 using Solitaire.I18n;
 
-namespace Solitaire.Menu.Options;
+namespace Solitaire.Menu.Options.DifficultyOptions;
 
 public class EasyDifficultyMenuOption : IMenuOption
 {

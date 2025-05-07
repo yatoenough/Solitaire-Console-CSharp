@@ -48,4 +48,7 @@
     <data name="game.waste.label" xml:space="preserve">
     <value>Dobrane karty</value>
   </data>
+  <data name="language.label" xml:space="preserve">
+    <value>Język</value>
+  </data>
 </root>

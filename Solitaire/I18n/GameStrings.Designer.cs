@@ -110,5 +110,11 @@ namespace Solitaire.I18n {
                 return ResourceManager.GetString("game.waste.label", resourceCulture);
             }
         }
+        
+        internal static string language_label {
+            get {
+                return ResourceManager.GetString("language.label", resourceCulture);
+            }
+        }
     }
 }

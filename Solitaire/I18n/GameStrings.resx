@@ -55,4 +55,7 @@
   <data name="game.waste.label" xml:space="preserve">
     <value>Drawn cards</value>
   </data>
+  <data name="language.label" xml:space="preserve">
+    <value>Language</value>
+  </data>
 </root>
