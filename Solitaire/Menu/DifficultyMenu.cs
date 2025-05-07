@@ -1,4 +1,5 @@
 using Figgle;
+using Solitaire.I18n;
 using Solitaire.Menu.Options;
 
 namespace Solitaire.Menu;
@@ -14,7 +15,7 @@ public class DifficultyMenu : Menu
 
     public override void Display(int pickedOption)
     {
-        Console.WriteLine(FiggleFonts.Standard.Render("Difficulty"));
+        Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.difficulty_label));
         for (int i = 0; i < OptionsCount; i++)
         {
             if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;

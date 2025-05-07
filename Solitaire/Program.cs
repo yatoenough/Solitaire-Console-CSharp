@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
+using Solitaire.I18n;
 using Solitaire.Menu;
 
 namespace Solitaire;
@@ -8,7 +10,10 @@ internal static class Program
     
     static Program()
     {
-        Console.Title = "Solitaire";
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo("pl");
+        
+        Console.Title = GameStrings.app_name;
+        
         Console.OutputEncoding = Encoding.UTF8;
     }
     

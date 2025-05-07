@@ -1,5 +1,6 @@
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
+using Solitaire.I18n;
 
 namespace Solitaire.Core.Rendering;
 
@@ -58,7 +59,7 @@ public class GameRenderer
 
     private void DisplayFoundations(List<Stack<Card>> foundations)
     {
-        Console.Write("Stosy końcowe: ");
+        Console.Write($@"{GameStrings.game_foundations}: ");
         foreach (var foundation in foundations)
         {
             if (foundation.Count > 0)
@@ -78,10 +79,10 @@ public class GameRenderer
 
     private void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
-        Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
+        Console.Write($"{GameStrings.game_stock_label}: {deck.Count}  ");
         
         Console.WriteLine("\n");
-        Console.Write("Dobrane karty: ");
+        Console.Write($"{GameStrings.game_waste_label}: ");
         
         foreach(var card in wastePile)
         {
@@ -103,7 +104,7 @@ public class GameRenderer
 
     private void DisplayPickedCards(List<Card>? cards)
     {
-        Console.Write("Wybrane karty: ");
+        Console.Write($"{GameStrings.game_selectedcard_label}: ");
         if (cards != null)
         {
             foreach (var card in cards)

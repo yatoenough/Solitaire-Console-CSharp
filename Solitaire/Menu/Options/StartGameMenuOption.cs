@@ -1,5 +1,6 @@
 using Solitaire.Config;
 using Solitaire.Core;
+using Solitaire.I18n;
 
 namespace Solitaire.Menu.Options;
 
@@ -7,7 +8,7 @@ public class StartGameMenuOption : IMenuOption
 {
     public string GetLabel()
     {
-        return "Play";
+        return GameStrings.option_play;
     }
 
     public void Execute()
