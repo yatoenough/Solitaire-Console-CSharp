@@ -34,6 +34,11 @@ public class Game
         while (true)
         {
             Console.Clear();
+            if (CheckWin())
+            {
+                Console.WriteLine($"You Win! Moves count: {moveManager.MoveCount}");
+                Environment.Exit(0);
+            }
             renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
 
             var key = Console.ReadKey(true).Key;
@@ -42,6 +47,18 @@ public class Game
 
             HandleInput(key);
         }
+    }
+
+    private bool CheckWin()
+    {
+        bool win = true;
+        
+        foreach (var column in columns)
+        {
+            if(column.HiddenCards.Count > 0) win = false;
+        }
+        
+        return win; 
     }
 
     private void InitGame()

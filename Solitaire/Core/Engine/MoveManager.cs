@@ -7,10 +7,12 @@ namespace Solitaire.Core.Engine;
 public class MoveManager(DeckManager deckManager, List<Column> columns, List<Stack<Card>> foundations)
 {
     private readonly List<Move> moveHistory = [];
+    public int MoveCount { get; private set; }
 
     public void RegisterMove(Move move)
     {
         moveHistory.Add(move);
+        MoveCount++;
         
         if (moveHistory.Count > 3)
         {
