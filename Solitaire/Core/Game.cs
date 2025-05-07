@@ -2,6 +2,7 @@ using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
+using Solitaire.I18n;
 
 namespace Solitaire.Core;
 
@@ -36,7 +37,7 @@ public class Game
             Console.Clear();
             if (CheckWin())
             {
-                Console.WriteLine($"You Win! Moves count: {moveManager.MoveCount}");
+                Console.WriteLine($"{GameStrings.win_label} {moveManager.MoveCount}");
                 Environment.Exit(0);
             }
             renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
@@ -54,6 +55,7 @@ public class Game
         bool win = true;
         
         foreach (var column in columns)
+            
         {
             if(column.HiddenCards.Count > 0) win = false;
         }

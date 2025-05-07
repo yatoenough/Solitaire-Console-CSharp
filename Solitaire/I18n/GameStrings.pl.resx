@@ -51,4 +51,7 @@
   <data name="language.label" xml:space="preserve">
     <value>Język</value>
   </data>
+  <data name="win.label" xml:space="preserve">
+    <value>Wygrałeś! Liczba ruchów:</value>
+  </data>
 </root>
