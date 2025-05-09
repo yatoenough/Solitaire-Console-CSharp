@@ -13,7 +13,7 @@ public interface IMenu
         Options[pickedOption].Execute();
     }
 
-    public static void HandleSubMenuInteraction(IMenu menu, MenuOptionPicker picker, Action? onConfirm = null)
+    public static void HandleSubMenuInteraction(IMenu menu, MenuOptionPicker picker, Action? onConfirm = null, bool infinite = false)
     {
         while (true)
         {
@@ -37,6 +37,10 @@ public interface IMenu
                 {
                     menu.Confirm(picker.PickedOption);
                     onConfirm?.Invoke();
+                    if (infinite)
+                    {
+                        break;
+                    }
                     return;
                 }
             }
