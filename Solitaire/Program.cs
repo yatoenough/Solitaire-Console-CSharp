@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Solitaire.I18n;
 using Solitaire.Menu;
+using Solitaire.Menu.Implementations;
 
 namespace Solitaire;
 
