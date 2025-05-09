@@ -64,4 +64,7 @@
   <data name="move.count.label" xml:space="preserve">
     <value>Moves count:</value>
   </data>
+  <data name="continue.label" xml:space="preserve">
+    <value>Click any key to continue...</value>
+  </data>
 </root>

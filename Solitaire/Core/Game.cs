@@ -40,7 +40,7 @@ public class Game
             {
                 Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
                 Console.WriteLine($"{GameStrings.move_count_label} {moveManager.MoveCount}\n");
-                Console.WriteLine("Click any key to continue...");
+                Console.WriteLine(GameStrings.continue_label);
                 Console.ReadKey();
                 return;
             }

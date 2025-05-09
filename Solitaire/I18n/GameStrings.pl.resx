@@ -57,4 +57,7 @@
   <data name="move.count.label" xml:space="preserve">
     <value>Liczba ruchów:</value>
   </data>
+  <data name="continue.label" xml:space="preserve">
+    <value>Kliknij dowolny przycisk żeby kontynuować...</value>
+  </data>
 </root>
