@@ -1,7 +1,9 @@
+using Figgle;
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
+using Solitaire.I18n;
 
 namespace Solitaire.Core;
 
@@ -34,6 +36,14 @@ public class Game
         while (true)
         {
             Console.Clear();
+            if (CheckWin())
+            {
+                Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
+                Console.WriteLine($"{GameStrings.move_count_label} {moveManager.MoveCount}\n");
+                Console.WriteLine("Click any key to continue...");
+                Console.ReadKey();
+                return;
+            }
             renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
 
             var key = Console.ReadKey(true).Key;
@@ -42,6 +52,18 @@ public class Game
 
             HandleInput(key);
         }
+    }
+
+    private bool CheckWin()
+    {
+        bool win = true;
+        
+        foreach (var column in columns)
+        {
+            if(column.HiddenCards.Count > 0) win = false;
+        }
+        
+        return win; 
     }
 
     private void InitGame()

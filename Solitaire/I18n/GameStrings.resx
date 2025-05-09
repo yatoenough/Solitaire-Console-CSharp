@@ -58,4 +58,10 @@
   <data name="language.label" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="win.label" xml:space="preserve">
+    <value>You win!</value>
+  </data>
+  <data name="move.count.label" xml:space="preserve">
+    <value>Moves count:</value>
+  </data>
 </root>
