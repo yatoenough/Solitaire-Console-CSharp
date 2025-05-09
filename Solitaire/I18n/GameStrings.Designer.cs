@@ -122,5 +122,11 @@ namespace Solitaire.I18n {
                 return ResourceManager.GetString("win.label", resourceCulture);
             }
         }
+        
+        internal static string move_count_label {
+            get {
+                return ResourceManager.GetString("move.count.label", resourceCulture);
+            }
+        }
     }
 }

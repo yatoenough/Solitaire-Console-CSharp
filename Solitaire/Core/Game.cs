@@ -1,3 +1,4 @@
+using Figgle;
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
@@ -37,7 +38,8 @@ public class Game
             Console.Clear();
             if (CheckWin())
             {
-                Console.WriteLine($"{GameStrings.win_label} {moveManager.MoveCount}");
+                Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
+                Console.WriteLine($"{GameStrings.move_count_label} {moveManager.MoveCount}");
                 Environment.Exit(0);
             }
             renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);

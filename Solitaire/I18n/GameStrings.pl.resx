@@ -52,6 +52,9 @@
     <value>Język</value>
   </data>
   <data name="win.label" xml:space="preserve">
-    <value>Wygrałeś! Liczba ruchów:</value>
+    <value>Wygrałeś!</value>
+  </data>
+  <data name="move.count.label" xml:space="preserve">
+    <value>Liczba ruchów:</value>
   </data>
 </root>
