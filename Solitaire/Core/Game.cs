@@ -39,8 +39,10 @@ public class Game
             if (CheckWin())
             {
                 Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
-                Console.WriteLine($"{GameStrings.move_count_label} {moveManager.MoveCount}");
-                Environment.Exit(0);
+                Console.WriteLine($"{GameStrings.move_count_label} {moveManager.MoveCount}\n");
+                Console.WriteLine("Click any key to continue...");
+                Console.ReadKey();
+                return;
             }
             renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
 
@@ -57,7 +59,6 @@ public class Game
         bool win = true;
         
         foreach (var column in columns)
-            
         {
             if(column.HiddenCards.Count > 0) win = false;
         }
