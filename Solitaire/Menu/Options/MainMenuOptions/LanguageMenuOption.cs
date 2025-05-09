@@ -1,4 +1,5 @@
 using Solitaire.I18n;
+using Solitaire.Menu.Implementations;
 
 namespace Solitaire.Menu.Options.MainMenuOptions;
 

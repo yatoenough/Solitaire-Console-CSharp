@@ -129,9 +129,15 @@ namespace Solitaire.I18n {
             }
         }
         
-        internal static string continue_label {
+        internal static string restart_label {
             get {
-                return ResourceManager.GetString("continue.label", resourceCulture);
+                return ResourceManager.GetString("restart.label", resourceCulture);
+            }
+        }
+        
+        internal static string option_back {
+            get {
+                return ResourceManager.GetString("option.back", resourceCulture);
             }
         }
     }

@@ -1,14 +1,15 @@
 using Solitaire.Config;
 using Solitaire.Core;
 using Solitaire.I18n;
+using Solitaire.Menu.Implementations;
 
 namespace Solitaire.Menu.Options.MainMenuOptions;
 
-public class StartGameMenuOption : IMenuOption
+public class StartGameMenuOption(string? label = null) : IMenuOption
 {
     public string GetLabel()
     {
-        return GameStrings.option_play;
+        return label ?? GameStrings.option_play;
     }
 
     public void Execute()

@@ -3,7 +3,7 @@ using Solitaire.I18n;
 using Solitaire.Menu.Options;
 using Solitaire.Menu.Options.DifficultyOptions;
 
-namespace Solitaire.Menu;
+namespace Solitaire.Menu.Implementations;
 
 public class DifficultyMenu : IMenu
 {

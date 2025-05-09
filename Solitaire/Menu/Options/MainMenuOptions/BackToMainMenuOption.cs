@@ -1,24 +1,21 @@
-﻿using System.Text;
 using Solitaire.I18n;
-using Solitaire.Menu;
 using Solitaire.Menu.Implementations;
 
-namespace Solitaire;
+namespace Solitaire.Menu.Options.MainMenuOptions;
 
-internal static class Program
+public class BackToMainMenuOption : IMenuOption
 {
-    
-    static Program()
+    public string GetLabel()
     {
-        Console.Title = GameStrings.app_name;
-        Console.OutputEncoding = Encoding.UTF8;
+        return GameStrings.option_back;
     }
-    
-    private static void Main()
+
+    public void Execute()
     {
         IMenu mainMenu = new MainMenu();
         var menuOptionPicker = new MenuOptionPicker(mainMenu.Options.Count);
-
+        
+        
         IMenu.HandleSubMenuInteraction(mainMenu, menuOptionPicker);
     }
 }

@@ -57,7 +57,10 @@
   <data name="move.count.label" xml:space="preserve">
     <value>Liczba ruchów:</value>
   </data>
-  <data name="continue.label" xml:space="preserve">
-    <value>Kliknij dowolny przycisk żeby kontynuować...</value>
+  <data name="restart.label" xml:space="preserve">
+    <value>Zagraj ponownie</value>
+  </data>
+  <data name="option.back" xml:space="preserve">
+    <value>Wróć</value>
   </data>
 </root>

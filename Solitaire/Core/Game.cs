@@ -3,7 +3,8 @@ using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
-using Solitaire.I18n;
+using Solitaire.Menu;
+using Solitaire.Menu.Implementations;
 
 namespace Solitaire.Core;
 
@@ -55,10 +56,10 @@ public class Game
 
     private void OnWin()
     {
-        Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
-        Console.WriteLine($"{GameStrings.move_count_label} {moveManager.MoveCount}\n");
-        Console.WriteLine(GameStrings.continue_label);
-        Console.ReadKey();
+        IMenu endgameMenu = new EndgameMenu(moveManager.MoveCount);
+        var menuOptionPicker = new MenuOptionPicker(endgameMenu.Options.Count);
+        
+        IMenu.HandleSubMenuInteraction(endgameMenu, menuOptionPicker);
     }
 
     private void InitGame()

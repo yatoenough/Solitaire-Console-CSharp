@@ -64,7 +64,10 @@
   <data name="move.count.label" xml:space="preserve">
     <value>Moves count:</value>
   </data>
-  <data name="continue.label" xml:space="preserve">
-    <value>Click any key to continue...</value>
+  <data name="restart.label" xml:space="preserve">
+    <value>Play again</value>
+  </data>
+  <data name="option.back" xml:space="preserve">
+    <value>Back</value>
   </data>
 </root>
