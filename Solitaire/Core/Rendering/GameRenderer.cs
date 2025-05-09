@@ -6,9 +6,15 @@ namespace Solitaire.Core.Rendering;
 
 public class GameRenderer
 {
-    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, List<Card>? pickedCards, int rangeStartIndex, bool isSelectingRange)
+    public void Render(GameState state)
     {
-        DisplayColumns(columns, pointer, rangeStartIndex, isSelectingRange);
+        var deckManager = state.DeckManager;
+        var pointer = state.Pointer;
+        var columns = state.Columns;
+        var pickedCards = state.PickedCards;
+        var foundations = state.Foundations;
+        
+        DisplayColumns(columns, pointer, state.RangeStartIndex, state.IsSelectingRange);
         DisplayPointer(pointer);
         DisplayPickedCards(pickedCards);
         DisplayFoundations(foundations);
