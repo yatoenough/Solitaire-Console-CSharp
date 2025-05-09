@@ -1,3 +1,4 @@
+using Solitaire.Config;
 using Solitaire.Core.Models;
 using Solitaire.Core.Utils;
 
@@ -6,10 +7,12 @@ namespace Solitaire.Core.Engine;
 public class MoveManager(DeckManager deckManager, List<Column> columns, List<Stack<Card>> foundations)
 {
     private readonly List<Move> moveHistory = [];
+    public int MoveCount { get; private set; }
 
     public void RegisterMove(Move move)
     {
         moveHistory.Add(move);
+        MoveCount++;
         
         if (moveHistory.Count > 3)
         {
@@ -30,30 +33,32 @@ public class MoveManager(DeckManager deckManager, List<Column> columns, List<Sta
         switch (move.Type)
         {
             case MoveType.DrawFromDeck:
-                var card = deckManager.PickFromWaste();
-                if (card != null)
-                    deckManager.ReturnToDeck(card);
+                for (int i = 0; i < Settings.Difficulty; i++)
+                {
+                    var card = deckManager.PickFromWaste();
+                    if (card != null) deckManager.ReturnToDeck(card);
+                }
                 break;
 
             case MoveType.FromWasteToColumn:
-                var col = columns[move.DestinationIndex];
-                col.VisibleCards.Remove(move.Cards[0]);
+            {
+                var column = columns[move.DestinationIndex];
+                column.VisibleCards.Remove(move.Cards[0]);
                 deckManager.ReturnToWaste(move.Cards[0]);
                 break;
+            }
 
             case MoveType.FromColumnToColumn:
             {
-                var sourceCol = columns[move.SourceIndex];
-                var destCol = columns[move.DestinationIndex];
+                var sourceColumn = columns[move.SourceIndex];
+                var destinationColumn = columns[move.DestinationIndex];
                 int count = move.Cards.Count;
 
-                destCol.VisibleCards.RemoveRange(destCol.VisibleCards.Count - count, count); 
+                destinationColumn.VisibleCards.RemoveRange(destinationColumn.VisibleCards.Count - count, count); 
                 
-                var lastFlippedCard = sourceCol.VisibleCards.Pop();
-                lastFlippedCard.IsShown = false;
-                sourceCol.HiddenCards.Push(lastFlippedCard);
+                sourceColumn.HideLastVisible();
                 
-                sourceCol.VisibleCards.AddRange(move.Cards);
+                sourceColumn.VisibleCards.AddRange(move.Cards);
                 break;
             }
 
@@ -62,9 +67,7 @@ public class MoveManager(DeckManager deckManager, List<Column> columns, List<Sta
                 var cardInFoundation = foundations[(int)move.Cards[0].Suit].Pop();
                 var column = columns[move.SourceIndex];
                 
-                var lastFlippedCard = column.VisibleCards.Pop();
-                lastFlippedCard.IsShown = false;
-                column.HiddenCards.Push(lastFlippedCard);
+                column.HideLastVisible();
                 
                 column.VisibleCards.Add(cardInFoundation);
                 break;

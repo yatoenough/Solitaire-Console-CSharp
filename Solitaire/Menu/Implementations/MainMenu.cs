@@ -1,0 +1,30 @@
+using Figgle;
+using Solitaire.I18n;
+using Solitaire.Menu.Options;
+using Solitaire.Menu.Options.MainMenuOptions;
+
+namespace Solitaire.Menu.Implementations;
+
+public class MainMenu : IMenu
+{
+    public List<IMenuOption> Options { get; } = [
+        new StartGameMenuOption(),
+        new LanguageMenuOption(),
+        new QuitMenuOption()
+    ];
+
+    public void Display(int pickedOption)
+    {
+        Console.WriteLine(FiggleFonts.Slant.Render(GameStrings.app_name));
+        
+        Console.WriteLine($"{GameStrings.createdby} [https://github.com/yatoenough]");
+
+        for (int i = 0; i < Options.Count; i++)
+        {
+            if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
+            Console.ResetColor();
+        }
+        
+    }
+}

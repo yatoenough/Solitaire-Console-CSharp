@@ -1,30 +1,25 @@
+using Figgle;
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
+using Solitaire.Menu;
+using Solitaire.Menu.Implementations;
 
 namespace Solitaire.Core;
 
 public class Game
 {
-    private readonly List<Column> columns = [];
-    private readonly List<Stack<Card>> foundations = [];
-    private readonly DeckManager deckManager = new();
+    private readonly GameState state = new();
     private readonly GameRenderer renderer = new();
-    private readonly Pointer pointer = new();
     private readonly MoveValidator validator = new();
     private MoveManager moveManager;
-    
-    private List<Card>? pickedCards;
-    private Column? sourceColumn;
-    private bool pickedFromWaste;
+    private int difficulty;
 
-    private bool isSelectingRange;
-    private int rangeStartIndex = -1;
-    
-    public Game() {
+    public Game(int difficulty = 1) {
+        this.difficulty = difficulty;
         InitGame();
-        moveManager = new MoveManager(deckManager, columns, foundations);
+        moveManager = new MoveManager(state.DeckManager, state.Columns, state.Foundations);
     }
     
     public void Start()
@@ -32,7 +27,12 @@ public class Game
         while (true)
         {
             Console.Clear();
-            renderer.Render(columns, foundations, deckManager, pointer, pickedCards, rangeStartIndex, isSelectingRange);
+            if (CheckIfWin())
+            {
+                OnWin();
+                return;
+            }
+            renderer.Render(state);
 
             var key = Console.ReadKey(true).Key;
 
@@ -40,9 +40,26 @@ public class Game
 
             HandleInput(key);
         }
+    }
 
-        Console.Clear();
-        Console.WriteLine("Bye!");
+    private bool CheckIfWin()
+    {
+        bool win = true;
+        
+        foreach (var column in state.Columns)
+        {
+            if(column.HiddenCards.Count > 0) win = false;
+        }
+        
+        return win; 
+    }
+
+    private void OnWin()
+    {
+        IMenu endgameMenu = new EndgameMenu(moveManager.MoveCount);
+        var menuOptionPicker = new MenuOptionPicker(endgameMenu.Options.Count);
+        
+        IMenu.HandleSubMenuInteraction(endgameMenu, menuOptionPicker);
     }
 
     private void InitGame()
@@ -52,7 +69,7 @@ public class Game
             var column = new Column();
             for (int j = 0; j <= i; j++)
             {
-                var card = deckManager.DrawFromDeck();
+                var card = state.DeckManager.DrawFromDeck();
                 
                 if(j == i)
                     card.IsShown = true;
@@ -62,16 +79,16 @@ public class Game
                 if(card.IsShown)
                     column.VisibleCards.Add(card);
             }
-            columns.Add(column);
+            state.Columns.Add(column);
         }
         
         for(int i = 0; i < 4; i++)
-            foundations.Add(new Stack<Card>());
+            state.Foundations.Add(new Stack<Card>());
     }
 
     private void HandleInput(ConsoleKey key)
     {
-        if (isSelectingRange)
+        if (state.IsSelectingRange)
         {
             HandleRangeSelectionInput(key);
             return;
@@ -80,10 +97,10 @@ public class Game
         switch(key)
         {
             case ConsoleKey.RightArrow:
-                pointer.MoveRight();
+                state.Pointer.MoveRight();
                 break;
             case ConsoleKey.LeftArrow:
-                pointer.MoveLeft();
+                state.Pointer.MoveLeft();
                 break;
                 
             case ConsoleKey.Enter:
@@ -95,7 +112,7 @@ public class Game
                 
             case ConsoleKey.D:
                 moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
-                deckManager.DrawCardToWaste();
+                state.DeckManager.DrawCardToWaste(difficulty);
                 break;
             case ConsoleKey.P:
                 PickCardFromWaste();
@@ -114,24 +131,24 @@ public class Game
     
     private void HandleEnterKey()
     {
-        if (pickedCards != null)
+        if (state.PickedCards != null)
         {
-            var target = columns[pointer.Position];
-            if (validator.CanPlaceOnColumn(pickedCards.First(), target))
+            var target = state.Columns[state.Pointer.Position];
+            if (validator.CanPlaceOnColumn(state.PickedCards.First(), target))
             {
-                target.VisibleCards.AddRange(pickedCards);
-                if (sourceColumn?.VisibleCards.Count == 0)
-                    sourceColumn.FlipLastHidden();
+                target.VisibleCards.AddRange(state.PickedCards);
+                if (state.SourceColumn?.VisibleCards.Count == 0)
+                    state.SourceColumn.FlipLastHidden();
 
                 Move move;
 
-                if (pickedFromWaste)
+                if (state.PickedFromWaste)
                 {
                     move = new Move
                     {
                         Type = MoveType.FromWasteToColumn,
-                        Cards = pickedCards,
-                        DestinationIndex = pointer.Position,
+                        Cards = state.PickedCards,
+                        DestinationIndex = state.Pointer.Position,
                     };
                 }
                 else
@@ -139,80 +156,80 @@ public class Game
                     move = new Move
                     {
                         Type = MoveType.FromColumnToColumn,
-                        Cards = pickedCards,
-                        SourceIndex = columns.IndexOf(sourceColumn),
-                        DestinationIndex = pointer.Position,
+                        Cards = state.PickedCards,
+                        SourceIndex = state.Columns.IndexOf(state.SourceColumn),
+                        DestinationIndex = state.Pointer.Position,
                     };
                 }
                 
                 moveManager.RegisterMove(move);
 
-                pickedCards = null;
-                sourceColumn = null;
+                state.PickedCards = null;
+                state.SourceColumn = null;
             }
         }
         else
         {
-            sourceColumn = columns[pointer.Position];
-            if (sourceColumn.VisibleCards.Count > 0)
+            state.SourceColumn = state.Columns[state.Pointer.Position];
+            if (state.SourceColumn.VisibleCards.Count > 0)
             {
-                var card = sourceColumn.VisibleCards.Pop();
-                pickedCards = [card];
-                pickedFromWaste = false;
+                var card = state.SourceColumn.VisibleCards.Pop();
+                state.PickedCards = [card];
+                state.PickedFromWaste = false;
             }
         }
     }
 
     private void PickCardFromWaste()
     {
-        if (pickedCards != null) return;
+        if (state.PickedCards != null) return;
 
-        var card = deckManager.PickFromWaste();
+        var card = state.DeckManager.PickFromWaste();
         if (card == null) return;
 
-        pickedCards = [card];
-        pickedFromWaste = true;
+        state.PickedCards = [card];
+        state.PickedFromWaste = true;
     }
 
     private void PutCardBack()
     {
-        if (pickedCards == null) return;
+        if (state.PickedCards == null) return;
 
-        if (pickedFromWaste)
+        if (state.PickedFromWaste)
         {
-            foreach (var card in pickedCards)
-                deckManager.ReturnToWaste(card);
+            foreach (var card in state.PickedCards)
+                state.DeckManager.ReturnToWaste(card);
         }
         else
-            sourceColumn?.VisibleCards.AddRange(pickedCards);
+            state.SourceColumn?.VisibleCards.AddRange(state.PickedCards);
 
-        pickedCards = null;
-        sourceColumn = null;
-        pickedFromWaste = false;
+        state.PickedCards = null;
+        state.SourceColumn = null;
+        state.PickedFromWaste = false;
     }
 
     private void StoreCardInFoundation()
     {
-        if (pickedCards == null || pickedCards.Count != 1) return;
+        if (state.PickedCards == null || state.PickedCards.Count != 1) return;
 
-        var card = pickedCards.First();
-        var foundation = foundations[(int)card.Suit];
+        var card = state.PickedCards.First();
+        var foundation = state.Foundations[(int)card.Suit];
 
         if (validator.CanMoveToFoundation(card, foundation))
         {
             foundation.Push(card);
 
-            if (sourceColumn?.VisibleCards.Count == 0)
-                sourceColumn.FlipLastHidden();
+            if (state.SourceColumn?.VisibleCards.Count == 0)
+                state.SourceColumn.FlipLastHidden();
             
             Move move;
 
-            if (pickedFromWaste)
+            if (state.PickedFromWaste)
             {
                 move = new Move
                 {
                     Type = MoveType.FromWasteToFoundation,
-                    Cards = pickedCards,
+                    Cards = state.PickedCards,
                 };
             }
             else
@@ -220,59 +237,59 @@ public class Game
                 move = new Move
                 {
                     Type = MoveType.FromColumnToFoundation,
-                    Cards = pickedCards,
-                    SourceIndex = columns.IndexOf(sourceColumn),
+                    Cards = state.PickedCards,
+                    SourceIndex = state.Columns.IndexOf(state.SourceColumn),
                 };
             }
             
             moveManager.RegisterMove(move);
 
-            pickedCards = null;
-            sourceColumn = null;
+            state.PickedCards = null;
+            state.SourceColumn = null;
         }
     }
     
     private void EnterRangeSelection()
     {
-        var column = columns[pointer.Position];
-        if (column.VisibleCards.Count == 0 || pickedCards != null) return;
+        var column = state.Columns[state.Pointer.Position];
+        if (column.VisibleCards.Count == 0 || state.PickedCards != null) return;
 
-        isSelectingRange = true;
-        rangeStartIndex = column.VisibleCards.Count - 1;
+        state.IsSelectingRange = true;
+        state.RangeStartIndex = column.VisibleCards.Count - 1;
     }
     
     private void HandleRangeSelectionInput(ConsoleKey key)
     {
-        var column = columns[pointer.Position];
+        var column = state.Columns[state.Pointer.Position];
         int maxIndex = column.VisibleCards.Count - 1;
 
         switch (key)
         {
             case ConsoleKey.UpArrow:
-                if (rangeStartIndex > 0)
-                    rangeStartIndex--;
+                if (state.RangeStartIndex > 0)
+                    state.RangeStartIndex--;
                 break;
             case ConsoleKey.DownArrow:
-                if (rangeStartIndex < maxIndex)
-                    rangeStartIndex++;
+                if (state.RangeStartIndex < maxIndex)
+                    state.RangeStartIndex++;
                 break;
             case ConsoleKey.Enter:
-                PickRange(column, rangeStartIndex);
-                isSelectingRange = false;
+                PickRange(column, state.RangeStartIndex);
+                state.IsSelectingRange = false;
                 break;
             case ConsoleKey.Backspace:
-                isSelectingRange = false;
-                rangeStartIndex = -1;
+                state.IsSelectingRange = false;
+                state.RangeStartIndex = -1;
                 break;
         }
     }
     
     private void PickRange(Column column, int startIndex)
     {
-        pickedCards = column.VisibleCards.GetRange(startIndex, column.VisibleCards.Count - startIndex);
-        column.VisibleCards.RemoveRange(startIndex, pickedCards.Count);
-        sourceColumn = column;
-        pickedFromWaste = false;
+        state.PickedCards = column.VisibleCards.GetRange(startIndex, column.VisibleCards.Count - startIndex);
+        column.VisibleCards.RemoveRange(startIndex, state.PickedCards.Count);
+        state.SourceColumn = column;
+        state.PickedFromWaste = false;
     }
 
 }

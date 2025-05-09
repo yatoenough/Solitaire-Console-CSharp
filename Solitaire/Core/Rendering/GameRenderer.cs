@@ -1,13 +1,20 @@
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
+using Solitaire.I18n;
 
 namespace Solitaire.Core.Rendering;
 
 public class GameRenderer
 {
-    public void Render(List<Column> columns, List<Stack<Card>> foundations, DeckManager deckManager, Pointer pointer, List<Card>? pickedCards, int rangeStartIndex, bool isSelectingRange)
+    public void Render(GameState state)
     {
-        DisplayColumns(columns, pointer, rangeStartIndex, isSelectingRange);
+        var deckManager = state.DeckManager;
+        var pointer = state.Pointer;
+        var columns = state.Columns;
+        var pickedCards = state.PickedCards;
+        var foundations = state.Foundations;
+        
+        DisplayColumns(columns, pointer, state.RangeStartIndex, state.IsSelectingRange);
         DisplayPointer(pointer);
         DisplayPickedCards(pickedCards);
         DisplayFoundations(foundations);
@@ -24,8 +31,7 @@ public class GameRenderer
             {
                 var column = columns[colIndex];
                 int hidden = column.HiddenCards.Count;
-                int visible = column.VisibleCards.Count;
-                int total = hidden + visible;
+                int total = column.CardsCount;
 
                 if (row < total)
                 {
@@ -59,7 +65,7 @@ public class GameRenderer
 
     private void DisplayFoundations(List<Stack<Card>> foundations)
     {
-        Console.Write("Stosy końcowe: ");
+        Console.Write($@"{GameStrings.game_foundations}: ");
         foreach (var foundation in foundations)
         {
             if (foundation.Count > 0)
@@ -79,10 +85,10 @@ public class GameRenderer
 
     private void DisplayPiles(Deck deck, Stack<Card> wastePile)
     {
-        Console.Write($"Kart w stosie rezerwowym: {deck.Count}  ");
+        Console.Write($"{GameStrings.game_stock_label}: {deck.Count}  ");
         
         Console.WriteLine("\n");
-        Console.Write("Dobrane karty: ");
+        Console.Write($"{GameStrings.game_waste_label}: ");
         
         foreach(var card in wastePile)
         {
@@ -104,7 +110,7 @@ public class GameRenderer
 
     private void DisplayPickedCards(List<Card>? cards)
     {
-        Console.Write("Wybrane karty: ");
+        Console.Write($"{GameStrings.game_selectedcard_label}: ");
         if (cards != null)
         {
             foreach (var card in cards)

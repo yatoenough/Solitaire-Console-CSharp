@@ -1,0 +1,66 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    
+    <data name="app.name" xml:space="preserve">
+    <value>Pasjans</value>
+  </data>
+  
+    <data name="createdby" xml:space="preserve">
+    <value>Autor: Nikita Shyshkin</value>
+  </data>
+    <data name="option.play" xml:space="preserve">
+    <value>Rozpocznij grę</value>
+  </data>
+    <data name="option.quit" xml:space="preserve">
+    <value>Wyjdź</value>
+  </data>
+  
+    <data name="difficulty.label" xml:space="preserve">
+    <value>Poziom trudności</value>
+  </data>
+    <data name="difficulty.easy" xml:space="preserve">
+    <value>Łatwy</value>
+  </data>
+    <data name="difficulty.hard" xml:space="preserve">
+    <value>Trudny</value>
+  </data>
+  
+    <data name="game.selectedcard.label" xml:space="preserve">
+    <value>Wybrane karty</value>
+  </data>
+    <data name="game.foundations" xml:space="preserve">
+    <value>Stosy końcowe</value>
+  </data>
+    <data name="game.stock.label" xml:space="preserve">
+    <value>Kart w stosie rezerwowym</value>
+  </data>
+    <data name="game.waste.label" xml:space="preserve">
+    <value>Dobrane karty</value>
+  </data>
+  <data name="language.label" xml:space="preserve">
+    <value>Język</value>
+  </data>
+  <data name="win.label" xml:space="preserve">
+    <value>Wygrałeś!</value>
+  </data>
+  <data name="move.count.label" xml:space="preserve">
+    <value>Liczba ruchów:</value>
+  </data>
+  <data name="restart.label" xml:space="preserve">
+    <value>Zagraj ponownie</value>
+  </data>
+  <data name="option.back" xml:space="preserve">
+    <value>Wróć</value>
+  </data>
+</root>
