@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-using Solitaire.Config;
+﻿using System.Text;
 using Solitaire.I18n;
 using Solitaire.Menu;
 
@@ -17,8 +15,8 @@ internal static class Program
     
     private static void Main()
     {
-        var mainMenu = new MainMenu();
-        var menuOptionPicker = new MenuOptionPicker(mainMenu.OptionsCount);
+        IMenu mainMenu = new MainMenu();
+        var menuOptionPicker = new MenuOptionPicker(mainMenu.Options.Count);
 
         while (true)
         {

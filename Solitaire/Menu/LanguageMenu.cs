@@ -5,29 +5,22 @@ using Solitaire.Menu.Options.LanguageOptions;
 
 namespace Solitaire.Menu;
 
-public class LanguageMenu : Menu
+public class LanguageMenu : IMenu
 {
-    private readonly List<IMenuOption> options = [
+    public List<IMenuOption> Options { get; } = [
         new EnglishMenuOption(),
         new PolishMenuOption()
     ];
-    
-    public new int OptionsCount => options.Count;
 
-    public override void Display(int pickedOption)
+    public void Display(int pickedOption)
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.language_label));
         
-        for (int i = 0; i < OptionsCount; i++)
+        for (int i = 0; i < Options.Count; i++)
         {
             if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"{i + 1}. {options[i].GetLabel()}");
+            Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
             Console.ResetColor();
         }
-    }
-
-    public override void Confirm(int pickedOption)
-    {
-        options[pickedOption].Execute();
     }
 }

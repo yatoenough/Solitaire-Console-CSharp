@@ -13,8 +13,8 @@ public class StartGameMenuOption : IMenuOption
 
     public void Execute()
     {
-        var difficultyMenu = new DifficultyMenu();
-        var menuOptionPicker = new MenuOptionPicker(difficultyMenu.OptionsCount);
+        IMenu difficultyMenu = new DifficultyMenu();
+        var menuOptionPicker = new MenuOptionPicker(difficultyMenu.Options.Count);
 
         while (true)
         {

@@ -5,29 +5,22 @@ using Solitaire.Menu.Options.DifficultyOptions;
 
 namespace Solitaire.Menu;
 
-public class DifficultyMenu : Menu
+public class DifficultyMenu : IMenu
 {
-    private readonly List<IMenuOption> options = [
+    public List<IMenuOption> Options { get; } = [
         new EasyDifficultyMenuOption(),
         new HardDifficultyMenuOption()
     ];
     
-    public new int OptionsCount => options.Count;
-
-    public override void Display(int pickedOption)
+    public void Display(int pickedOption)
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.difficulty_label));
         
-        for (int i = 0; i < OptionsCount; i++)
+        for (int i = 0; i < Options.Count; i++)
         {
             if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"{i + 1}. {options[i].GetLabel()}");
+            Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
             Console.ResetColor();
         }
-    }
-
-    public override void Confirm(int pickedOption)
-    {
-        options[pickedOption].Execute();
     }
 }

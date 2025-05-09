@@ -11,8 +11,8 @@ public class LanguageMenuOption : IMenuOption
 
     public void Execute()
     {
-        var languageMenu = new LanguageMenu();
-        var menuOptionPicker = new MenuOptionPicker(languageMenu.OptionsCount);
+        IMenu languageMenu = new LanguageMenu();
+        var menuOptionPicker = new MenuOptionPicker(languageMenu.Options.Count);
 
         while (true)
         {
