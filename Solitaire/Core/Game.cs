@@ -1,4 +1,3 @@
-using Figgle;
 using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
@@ -111,8 +110,7 @@ public class Game
                 break;
                 
             case ConsoleKey.D:
-                moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
-                state.DeckManager.DrawCardToWaste(difficulty);
+                PickCardFromStock();
                 break;
             case ConsoleKey.P:
                 PickCardFromWaste();
@@ -189,6 +187,14 @@ public class Game
 
         state.PickedCards = [card];
         state.PickedFromWaste = true;
+    }
+
+    private void PickCardFromStock()
+    {
+        if(state.PickedCards != null) return;
+        
+        moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
+        state.DeckManager.DrawCardToWaste(difficulty);
     }
 
     private void PutCardBack()
