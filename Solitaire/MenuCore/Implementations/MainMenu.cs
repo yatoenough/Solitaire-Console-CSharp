@@ -1,19 +1,19 @@
 using Figgle;
 using Solitaire.I18n;
-using Solitaire.Menu.Options;
-using Solitaire.Menu.Options.MainMenuOptions;
+using Solitaire.MenuCore.Options;
+using Solitaire.MenuCore.Options.MainMenuOptions;
 
-namespace Solitaire.Menu.Implementations;
+namespace Solitaire.MenuCore.Implementations;
 
-public class MainMenu : IMenu
+public class MainMenu : Menu
 {
-    public List<IMenuOption> Options { get; } = [
+    public override List<MenuOption> Options { get; } = [
         new StartGameMenuOption(),
         new LanguageMenuOption(),
         new QuitMenuOption()
     ];
 
-    public void Display(int pickedOption)
+    public override void Display(int pickedOption)
     {
         Console.WriteLine(FiggleFonts.Slant.Render(GameStrings.app_name));
         

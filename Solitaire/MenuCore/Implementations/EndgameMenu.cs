@@ -1,18 +1,18 @@
 using Figgle;
 using Solitaire.I18n;
-using Solitaire.Menu.Options;
-using Solitaire.Menu.Options.MainMenuOptions;
+using Solitaire.MenuCore.Options;
+using Solitaire.MenuCore.Options.MainMenuOptions;
 
-namespace Solitaire.Menu.Implementations;
+namespace Solitaire.MenuCore.Implementations;
 
-public class EndgameMenu(int moveCount) : IMenu
+public class EndgameMenu(int moveCount) : Menu
 {
-    public List<IMenuOption> Options { get; } = [
+    public override List<MenuOption> Options { get; } = [
         new StartGameMenuOption(GameStrings.restart_label),
         new BackToMainMenuOption()
     ];
     
-    public void Display(int pickedOption)
+    public override void Display(int pickedOption)
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
         Console.WriteLine($"{GameStrings.move_count_label} {moveCount}\n");

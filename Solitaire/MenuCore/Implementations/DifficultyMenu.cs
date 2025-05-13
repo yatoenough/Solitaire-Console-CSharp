@@ -1,18 +1,18 @@
 using Figgle;
 using Solitaire.I18n;
-using Solitaire.Menu.Options;
-using Solitaire.Menu.Options.DifficultyOptions;
+using Solitaire.MenuCore.Options;
+using Solitaire.MenuCore.Options.DifficultyOptions;
 
-namespace Solitaire.Menu.Implementations;
+namespace Solitaire.MenuCore.Implementations;
 
-public class DifficultyMenu : IMenu
+public class DifficultyMenu : Menu
 {
-    public List<IMenuOption> Options { get; } = [
+    public override List<MenuOption> Options { get; } = [
         new EasyDifficultyMenuOption(),
         new HardDifficultyMenuOption()
     ];
     
-    public void Display(int pickedOption)
+    public override void Display(int pickedOption)
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.difficulty_label));
         

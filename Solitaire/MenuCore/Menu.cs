@@ -1,19 +1,19 @@
-using Solitaire.Menu.Options;
+using Solitaire.MenuCore.Options;
 
-namespace Solitaire.Menu;
+namespace Solitaire.MenuCore;
 
-public interface IMenu
+public abstract class Menu
 {
-    List<IMenuOption> Options { get; }
+    public abstract List<MenuOption> Options { get; }
 
-    public void Display(int pickedOption);
+    public abstract void Display(int pickedOption);
 
     public void Confirm(int pickedOption)
     {
         Options[pickedOption].Execute();
     }
 
-    public static void HandleSubMenuInteraction(IMenu menu, MenuOptionPicker picker, Action? onConfirm = null, bool infinite = false)
+    public static void HandleSubMenuInteraction(Menu menu, MenuOptionPicker picker, Action? onConfirm = null, bool infinite = false)
     {
         while (true)
         {

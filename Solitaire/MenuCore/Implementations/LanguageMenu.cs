@@ -1,18 +1,18 @@
 using Figgle;
 using Solitaire.I18n;
-using Solitaire.Menu.Options;
-using Solitaire.Menu.Options.LanguageOptions;
+using Solitaire.MenuCore.Options;
+using Solitaire.MenuCore.Options.LanguageOptions;
 
-namespace Solitaire.Menu.Implementations;
+namespace Solitaire.MenuCore.Implementations;
 
-public class LanguageMenu : IMenu
+public class LanguageMenu : Menu
 {
-    public List<IMenuOption> Options { get; } = [
+    public override List<MenuOption> Options { get; } = [
         new EnglishMenuOption(),
         new PolishMenuOption()
     ];
 
-    public void Display(int pickedOption)
+    public override void Display(int pickedOption)
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.language_label));
         

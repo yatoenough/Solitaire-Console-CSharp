@@ -1,16 +1,16 @@
 using System.Globalization;
 using Solitaire.Config;
 
-namespace Solitaire.Menu.Options.LanguageOptions;
+namespace Solitaire.MenuCore.Options.LanguageOptions;
 
-public class PolishMenuOption : IMenuOption
+public class PolishMenuOption : MenuOption
 {
-    public string GetLabel()
+    public override string GetLabel()
     {
         return "Polski";
     }
 
-    public void Execute()
+    public override void Execute()
     {
         Settings.CultureCode = "pl";
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.CultureCode);

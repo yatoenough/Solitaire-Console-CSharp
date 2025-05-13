@@ -2,8 +2,8 @@ using Solitaire.Core.Engine;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
-using Solitaire.Menu;
-using Solitaire.Menu.Implementations;
+using Solitaire.MenuCore;
+using Solitaire.MenuCore.Implementations;
 
 namespace Solitaire.Core;
 
@@ -55,10 +55,10 @@ public class Game
 
     private void OnWin()
     {
-        IMenu endgameMenu = new EndgameMenu(moveManager.MoveCount);
+        Menu endgameMenu = new EndgameMenu(moveManager.MoveCount);
         var menuOptionPicker = new MenuOptionPicker(endgameMenu.Options.Count);
         
-        IMenu.HandleSubMenuInteraction(endgameMenu, menuOptionPicker);
+        Menu.HandleSubMenuInteraction(endgameMenu, menuOptionPicker);
     }
 
     private void InitGame()
