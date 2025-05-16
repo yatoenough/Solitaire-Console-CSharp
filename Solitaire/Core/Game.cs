@@ -1,16 +1,15 @@
-using Figgle;
 using Solitaire.Core.Engine;
+using Solitaire.Core.MenuCore;
+using Solitaire.Core.MenuCore.Implementations;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
-using Solitaire.Menu;
-using Solitaire.Menu.Implementations;
 
 namespace Solitaire.Core;
 
 public class Game
 {
-    private readonly GameState state = new();
+    private GameState state = new();
     private readonly GameRenderer renderer = new();
     private readonly MoveValidator validator = new();
     private MoveManager moveManager;
@@ -29,14 +28,27 @@ public class Game
             Console.Clear();
             if (CheckIfWin())
             {
-                OnWin();
+                ScoreboardStore.AppendNewResult(new GameResult(DateTime.Now, moveManager.MoveCount));
+                Menu.Handle(new EndgameMenu(moveManager.MoveCount));
                 return;
             }
             renderer.Render(state);
 
             var key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.Q) break;
+            switch (key)
+            {
+                case ConsoleKey.Q:
+                {
+                    Menu.Handle(new QuitConfirmationMenu());
+                    break;
+                }
+                case ConsoleKey.R:
+                {
+                    Menu.Handle(new RestartMenu());
+                    break;
+                }
+            }
 
             HandleInput(key);
         }
@@ -54,22 +66,16 @@ public class Game
         return win; 
     }
 
-    private void OnWin()
-    {
-        IMenu endgameMenu = new EndgameMenu(moveManager.MoveCount);
-        var menuOptionPicker = new MenuOptionPicker(endgameMenu.Options.Count);
-        
-        IMenu.HandleSubMenuInteraction(endgameMenu, menuOptionPicker);
-    }
-
     private void InitGame()
     {
+        state = new();
+        
         for (int i = 0; i < 7; i++)
         {
             var column = new Column();
             for (int j = 0; j <= i; j++)
             {
-                var card = state.DeckManager.DrawFromDeck();
+                var card = state.DeckManager.DrawFromDeck()!;
                 
                 if(j == i)
                     card.IsShown = true;
@@ -111,8 +117,7 @@ public class Game
                 break;
                 
             case ConsoleKey.D:
-                moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
-                state.DeckManager.DrawCardToWaste(difficulty);
+                PickCardFromStock();
                 break;
             case ConsoleKey.P:
                 PickCardFromWaste();
@@ -189,6 +194,14 @@ public class Game
 
         state.PickedCards = [card];
         state.PickedFromWaste = true;
+    }
+
+    private void PickCardFromStock()
+    {
+        if(state.PickedCards != null) return;
+        
+        moveManager.RegisterMove(new Move { Type = MoveType.DrawFromDeck });
+        state.DeckManager.DrawCardToWaste(difficulty);
     }
 
     private void PutCardBack()

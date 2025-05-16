@@ -1,7 +1,7 @@
 ﻿using System.Text;
+using Solitaire.Core.MenuCore;
+using Solitaire.Core.MenuCore.Implementations;
 using Solitaire.I18n;
-using Solitaire.Menu;
-using Solitaire.Menu.Implementations;
 
 namespace Solitaire;
 
@@ -16,9 +16,6 @@ internal static class Program
     
     private static void Main()
     {
-        IMenu mainMenu = new MainMenu();
-        var menuOptionPicker = new MenuOptionPicker(mainMenu.Options.Count);
-
-        IMenu.HandleSubMenuInteraction(mainMenu, menuOptionPicker, infinite: true);
+        Menu.Handle(new MainMenu(), infinite: true);
     }
 }

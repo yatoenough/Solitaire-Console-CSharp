@@ -70,4 +70,19 @@
   <data name="option.back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="quit.confirmation.label" xml:space="preserve">
+    <value>Are you sure you want to quit?</value>
+  </data>
+  <data name="option.dontquit" xml:space="preserve">
+    <value>Don't quit</value>
+  </data>
+  <data name="dontrestart.label" xml:space="preserve">
+    <value>Don't restart</value>
+  </data>
+  <data name="restart.confirmation.label" xml:space="preserve">
+    <value>Are you sure you want to restart the game?</value>
+  </data>
+  <data name="scoreboard.label" xml:space="preserve">
+    <value>Scoreboard</value>
+  </data>
 </root>
