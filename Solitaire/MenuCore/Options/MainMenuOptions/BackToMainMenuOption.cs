@@ -12,10 +12,6 @@ public class BackToMainMenuOption : MenuOption
 
     public override void Execute()
     {
-        Menu mainMenu = new MainMenu();
-        var menuOptionPicker = new MenuOptionPicker(mainMenu.Options.Count);
-        
-        
-        Menu.HandleSubMenuInteraction(mainMenu, menuOptionPicker);
+        Menu.HandleSubMenuInteraction(new MainMenu());
     }
 }

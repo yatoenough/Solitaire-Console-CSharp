@@ -8,13 +8,25 @@ public abstract class Menu
 
     public abstract void Display(int pickedOption);
 
+    public void DisplayOptions(int pickedOption)
+    {
+        for (int i = 0; i < Options.Count; i++)
+        {
+            if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
+            Console.ResetColor();
+        }
+    }
+
     public void Confirm(int pickedOption)
     {
         Options[pickedOption].Execute();
     }
 
-    public static void HandleSubMenuInteraction(Menu menu, MenuOptionPicker picker, Action? onConfirm = null, bool infinite = false)
+    public static void HandleSubMenuInteraction(Menu menu, Action? onConfirm = null, bool infinite = false)
     {
+        var picker = new MenuOptionPicker(menu.Options.Count);
+        
         while (true)
         {
             Console.Clear();

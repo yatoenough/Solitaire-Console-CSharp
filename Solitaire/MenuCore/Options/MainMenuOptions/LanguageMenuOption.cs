@@ -12,9 +12,6 @@ public class LanguageMenuOption : MenuOption
 
     public override void Execute()
     {
-        Menu languageMenu = new LanguageMenu();
-        var menuOptionPicker = new MenuOptionPicker(languageMenu.Options.Count);
-
-        Menu.HandleSubMenuInteraction(languageMenu, menuOptionPicker);
+        Menu.HandleSubMenuInteraction(new LanguageMenu());
     }
 }

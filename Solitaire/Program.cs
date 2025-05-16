@@ -16,9 +16,6 @@ internal static class Program
     
     private static void Main()
     {
-        Menu mainMenu = new MainMenu();
-        var menuOptionPicker = new MenuOptionPicker(mainMenu.Options.Count);
-
-        Menu.HandleSubMenuInteraction(mainMenu, menuOptionPicker, infinite: true);
+        Menu.HandleSubMenuInteraction(new MainMenu(), infinite: true);
     }
 }

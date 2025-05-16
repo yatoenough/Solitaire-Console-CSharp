@@ -14,10 +14,7 @@ public class StartGameMenuOption(string? label = null) : MenuOption
 
     public override void Execute()
     {
-        Menu difficultyMenu = new DifficultyMenu();
-        var menuOptionPicker = new MenuOptionPicker(difficultyMenu.Options.Count);
-
-        Menu.HandleSubMenuInteraction(difficultyMenu, menuOptionPicker, () =>
+        Menu.HandleSubMenuInteraction(new DifficultyMenu(), () =>
         {
             var game = new Game(Settings.Difficulty);
             game.Start();

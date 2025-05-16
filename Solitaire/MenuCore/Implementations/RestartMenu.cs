@@ -16,11 +16,6 @@ public class RestartMenu : Menu
     {
         Console.WriteLine($"{GameStrings.restart_confirmation_label}\n");
         
-        for (int i = 0; i < Options.Count; i++)
-        {
-            if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
-            Console.ResetColor();
-        }
+        DisplayOptions(pickedOption);
     }
 }

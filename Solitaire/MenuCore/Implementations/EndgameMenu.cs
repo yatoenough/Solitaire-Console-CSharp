@@ -17,11 +17,6 @@ public class EndgameMenu(int moveCount) : Menu
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
         Console.WriteLine($"{GameStrings.move_count_label} {moveCount}\n");
         
-        for (int i = 0; i < Options.Count; i++)
-        {
-            if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
-            Console.ResetColor();
-        }
+        DisplayOptions(pickedOption);
     }
 }
