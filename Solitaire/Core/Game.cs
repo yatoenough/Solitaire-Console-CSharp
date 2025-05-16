@@ -9,7 +9,7 @@ namespace Solitaire.Core;
 
 public class Game
 {
-    private readonly GameState state = new();
+    private GameState state = new();
     private readonly GameRenderer renderer = new();
     private readonly MoveValidator validator = new();
     private MoveManager moveManager;
@@ -63,12 +63,14 @@ public class Game
 
     private void InitGame()
     {
+        state = new();
+        
         for (int i = 0; i < 7; i++)
         {
             var column = new Column();
             for (int j = 0; j <= i; j++)
             {
-                var card = state.DeckManager.DrawFromDeck();
+                var card = state.DeckManager.DrawFromDeck()!;
                 
                 if(j == i)
                     card.IsShown = true;

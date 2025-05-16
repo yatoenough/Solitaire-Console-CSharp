@@ -13,15 +13,15 @@ public class DeckManager
         deck.Shuffle();
     }
 
-    public Card DrawFromDeck() => deck.DrawCard()!;
+    public Card? DrawFromDeck() => deck.DrawCard();
     public void DrawCardToWaste(int difficulty = 1)
     {
-        if (deck.Count < difficulty)
+        if (deck.Count == 0)
             RecycleWasteToDeck();
-
+        
         for (int i = 0; i < difficulty && deck.Count > 0; i++)
         {
-            var card = deck.DrawCard();
+            var card = DrawFromDeck();
             if (card == null) break;
 
             card.IsShown = true;
