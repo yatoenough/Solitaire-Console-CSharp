@@ -10,6 +10,7 @@ public class MainMenu : Menu
     protected override List<MenuOption> Options { get; } = [
         new StartGameMenuOption(),
         new LanguageMenuOption(),
+        new ScoreboardMenuOption(),
         new QuitMenuOption()
     ];
 

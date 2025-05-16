@@ -82,4 +82,7 @@
   <data name="restart.confirmation.label" xml:space="preserve">
     <value>Are you sure you want to restart the game?</value>
   </data>
+  <data name="scoreboard.label" xml:space="preserve">
+    <value>Scoreboard</value>
+  </data>
 </root>

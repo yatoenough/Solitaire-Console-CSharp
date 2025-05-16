@@ -28,6 +28,7 @@ public class Game
             Console.Clear();
             if (CheckIfWin())
             {
+                ScoreboardStore.AppendNewResult(new GameResult(DateTime.Now, moveManager.MoveCount));
                 Menu.Handle(new EndgameMenu(moveManager.MoveCount));
                 return;
             }

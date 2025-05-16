@@ -164,5 +164,11 @@ namespace Solitaire.I18n {
                 return ResourceManager.GetString("restart.confirmation.label", resourceCulture);
             }
         }
+        
+        internal static string scoreboard_label {
+            get {
+                return ResourceManager.GetString("scoreboard.label", resourceCulture);
+            }
+        }
     }
 }

@@ -72,4 +72,10 @@
   <data name="dontrestart.label" xml:space="preserve">
     <value>Nie zaczynaj od nowa</value>
   </data>
+  <data name="restart.confirmation.label" xml:space="preserve">
+    <value>Na pewno chcesz zacząć grę od nowa?</value>
+  </data>
+  <data name="scoreboard.label" xml:space="preserve">
+    <value>Tablica wyników</value>
+  </data>
 </root>
