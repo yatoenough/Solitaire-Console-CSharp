@@ -35,7 +35,13 @@ public class Game
 
             var key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.Q) break;
+            if (key == ConsoleKey.Q)
+            {
+                var menu = new QuitConfirmationMenu();
+                var picker = new MenuOptionPicker(menu.Options.Count);
+                
+                Menu.HandleSubMenuInteraction(new QuitConfirmationMenu(), picker);
+            }
 
             HandleInput(key);
         }
