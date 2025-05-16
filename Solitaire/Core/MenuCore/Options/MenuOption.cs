@@ -1,4 +1,4 @@
-namespace Solitaire.MenuCore.Options;
+namespace Solitaire.Core.MenuCore.Options;
 
 public abstract class MenuOption
 {

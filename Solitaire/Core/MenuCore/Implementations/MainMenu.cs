@@ -1,9 +1,9 @@
 using Figgle;
+using Solitaire.Core.MenuCore.Options;
+using Solitaire.Core.MenuCore.Options.MainMenuOptions;
 using Solitaire.I18n;
-using Solitaire.MenuCore.Options;
-using Solitaire.MenuCore.Options.MainMenuOptions;
 
-namespace Solitaire.MenuCore.Implementations;
+namespace Solitaire.Core.MenuCore.Implementations;
 
 public class MainMenu : Menu
 {

@@ -1,7 +1,7 @@
 using System.Globalization;
 using Solitaire.Config;
 
-namespace Solitaire.MenuCore.Options.LanguageOptions;
+namespace Solitaire.Core.MenuCore.Options.LanguageOptions;
 
 public class PolishMenuOption : MenuOption
 {

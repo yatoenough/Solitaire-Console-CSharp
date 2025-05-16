@@ -1,7 +1,7 @@
 ﻿using System.Text;
+using Solitaire.Core.MenuCore;
+using Solitaire.Core.MenuCore.Implementations;
 using Solitaire.I18n;
-using Solitaire.MenuCore;
-using Solitaire.MenuCore.Implementations;
 
 namespace Solitaire;
 

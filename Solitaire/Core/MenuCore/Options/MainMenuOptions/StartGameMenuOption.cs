@@ -1,9 +1,8 @@
 using Solitaire.Config;
-using Solitaire.Core;
+using Solitaire.Core.MenuCore.Implementations;
 using Solitaire.I18n;
-using Solitaire.MenuCore.Implementations;
 
-namespace Solitaire.MenuCore.Options.MainMenuOptions;
+namespace Solitaire.Core.MenuCore.Options.MainMenuOptions;
 
 public class StartGameMenuOption(string? label = null) : MenuOption
 {

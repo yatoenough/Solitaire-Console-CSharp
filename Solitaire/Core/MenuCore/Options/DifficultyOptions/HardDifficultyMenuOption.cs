@@ -1,7 +1,7 @@
 using Solitaire.Config;
 using Solitaire.I18n;
 
-namespace Solitaire.MenuCore.Options.DifficultyOptions;
+namespace Solitaire.Core.MenuCore.Options.DifficultyOptions;
 
 public class HardDifficultyMenuOption : MenuOption
 {

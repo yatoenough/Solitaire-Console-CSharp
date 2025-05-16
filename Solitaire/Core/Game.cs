@@ -1,9 +1,9 @@
 using Solitaire.Core.Engine;
+using Solitaire.Core.MenuCore;
+using Solitaire.Core.MenuCore.Implementations;
 using Solitaire.Core.Models;
 using Solitaire.Core.Rendering;
 using Solitaire.Core.Utils;
-using Solitaire.MenuCore;
-using Solitaire.MenuCore.Implementations;
 
 namespace Solitaire.Core;
 

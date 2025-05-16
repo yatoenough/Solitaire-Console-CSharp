@@ -1,16 +1,16 @@
-using Solitaire.MenuCore.Options;
+using Solitaire.Core.MenuCore.Options;
 
-namespace Solitaire.MenuCore;
+namespace Solitaire.Core.MenuCore;
 
 public abstract class Menu
 {
     protected abstract List<MenuOption> Options { get; }
 
-    private MenuOptionPicker OptionPicker;
+    private MenuOptionPicker optionPicker;
 
     protected Menu()
     {
-        OptionPicker = new MenuOptionPicker(Options.Count);
+        optionPicker = new MenuOptionPicker(Options.Count);
     }
 
     protected abstract void DisplayMenu();
@@ -25,7 +25,7 @@ public abstract class Menu
     {
         for (int i = 0; i < Options.Count; i++)
         {
-            if(OptionPicker.PickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
+            if(optionPicker.PickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
             Console.ResetColor();
         }
@@ -33,7 +33,7 @@ public abstract class Menu
 
     private void Confirm()
     {
-        Options[OptionPicker.PickedOption].Execute();
+        Options[optionPicker.PickedOption].Execute();
     }
 
     public static void Handle(Menu menu, Action? onConfirm = null, bool infinite = false)
@@ -48,12 +48,12 @@ public abstract class Menu
             {
                 case ConsoleKey.UpArrow:
                 {
-                    menu.OptionPicker.OnUpArrowPressed();
+                    menu.optionPicker.OnUpArrowPressed();
                     break;
                 }
                 case ConsoleKey.DownArrow:
                 {
-                    menu.OptionPicker.OnDownArrowPressed();
+                    menu.optionPicker.OnDownArrowPressed();
                     break;
                 }
                 case ConsoleKey.Enter:

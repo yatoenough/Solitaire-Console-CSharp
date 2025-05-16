@@ -1,6 +1,6 @@
 using Solitaire.I18n;
 
-namespace Solitaire.MenuCore.Options.MainMenuOptions;
+namespace Solitaire.Core.MenuCore.Options.MainMenuOptions;
 
 public class QuitMenuOption : MenuOption
 {
