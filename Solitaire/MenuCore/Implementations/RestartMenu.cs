@@ -4,17 +4,17 @@ using Solitaire.MenuCore.Options.MainMenuOptions;
 
 namespace Solitaire.MenuCore.Implementations;
 
-public class QuitConfirmationMenu : Menu
+public class RestartMenu : Menu
 {
     public override List<MenuOption> Options { get; } =
     [
-        new QuitMenuOption(),
-        new EmptyMenuOption(GameStrings.option_dontquit)
+        new StartGameMenuOption(GameStrings.restart_label),
+        new EmptyMenuOption(GameStrings.dontrestart_label)
     ];
     
     public override void Display(int pickedOption)
     {
-        Console.WriteLine($"{GameStrings.quit_confirmation_label}\n");
+        Console.WriteLine($"{GameStrings.restart_confirmation_label}\n");
         
         for (int i = 0; i < Options.Count; i++)
         {

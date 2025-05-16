@@ -63,4 +63,13 @@
   <data name="option.back" xml:space="preserve">
     <value>Wróć</value>
   </data>
+  <data name="quit.confirmation.label" xml:space="preserve">
+    <value>Na pewno chcesz wyjść?</value>
+  </data>
+  <data name="option.dontquit" xml:space="preserve">
+    <value>Nie wychodź</value>
+  </data>
+  <data name="dontrestart.label" xml:space="preserve">
+    <value>Nie zaczynaj od nowa</value>
+  </data>
 </root>
