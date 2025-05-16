@@ -12,11 +12,11 @@ public class EndgameMenu(int moveCount) : Menu
         new BackToMainMenuOption()
     ];
     
-    public override void Display(int pickedOption)
+    public override void Display()
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
         Console.WriteLine($"{GameStrings.move_count_label} {moveCount}\n");
         
-        DisplayOptions(pickedOption);
+        DisplayOptions();
     }
 }

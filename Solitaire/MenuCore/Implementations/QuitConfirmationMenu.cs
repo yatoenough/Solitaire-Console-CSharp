@@ -12,10 +12,10 @@ public class QuitConfirmationMenu : Menu
         new EmptyMenuOption(GameStrings.option_dontquit)
     ];
     
-    public override void Display(int pickedOption)
+    public override void Display()
     {
         Console.WriteLine($"{GameStrings.quit_confirmation_label}\n");
         
-        DisplayOptions(pickedOption);
+        DisplayOptions();
     }
 }

@@ -13,12 +13,12 @@ public class MainMenu : Menu
         new QuitMenuOption()
     ];
 
-    public override void Display(int pickedOption)
+    public override void Display()
     {
         Console.WriteLine(FiggleFonts.Slant.Render(GameStrings.app_name));
         
         Console.WriteLine($"{GameStrings.createdby} [https://github.com/yatoenough]");
 
-        DisplayOptions(pickedOption);
+        DisplayOptions();
     }
 }

@@ -12,10 +12,10 @@ public class DifficultyMenu : Menu
         new HardDifficultyMenuOption()
     ];
     
-    public override void Display(int pickedOption)
+    public override void Display()
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.difficulty_label));
         
-        DisplayOptions(pickedOption);
+        DisplayOptions();
     }
 }

@@ -12,10 +12,10 @@ public class RestartMenu : Menu
         new EmptyMenuOption(GameStrings.dontrestart_label)
     ];
     
-    public override void Display(int pickedOption)
+    public override void Display()
     {
         Console.WriteLine($"{GameStrings.restart_confirmation_label}\n");
         
-        DisplayOptions(pickedOption);
+        DisplayOptions();
     }
 }

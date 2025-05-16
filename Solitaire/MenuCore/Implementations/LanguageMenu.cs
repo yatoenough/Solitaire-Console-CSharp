@@ -12,10 +12,10 @@ public class LanguageMenu : Menu
         new PolishMenuOption()
     ];
 
-    public override void Display(int pickedOption)
+    public override void Display()
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.language_label));
         
-        DisplayOptions(pickedOption);
+        DisplayOptions();
     }
 }

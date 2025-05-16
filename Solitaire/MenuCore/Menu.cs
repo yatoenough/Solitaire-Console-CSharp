@@ -5,49 +5,54 @@ namespace Solitaire.MenuCore;
 public abstract class Menu
 {
     public abstract List<MenuOption> Options { get; }
+    
+    protected MenuOptionPicker OptionPicker;
 
-    public abstract void Display(int pickedOption);
+    public Menu()
+    {
+        OptionPicker = new MenuOptionPicker(Options.Count);
+    }
 
-    public void DisplayOptions(int pickedOption)
+    public abstract void Display();
+
+    public void DisplayOptions()
     {
         for (int i = 0; i < Options.Count; i++)
         {
-            if(pickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
+            if(OptionPicker.PickedOption == i) Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.WriteLine($"{i + 1}. {Options[i].GetLabel()}");
             Console.ResetColor();
         }
     }
 
-    public void Confirm(int pickedOption)
+    public void Confirm()
     {
-        Options[pickedOption].Execute();
+        Options[OptionPicker.PickedOption].Execute();
     }
 
     public static void HandleSubMenuInteraction(Menu menu, Action? onConfirm = null, bool infinite = false)
     {
-        var picker = new MenuOptionPicker(menu.Options.Count);
-        
         while (true)
         {
             Console.Clear();
-            menu.Display(picker.PickedOption);
+            menu.Display();
 
             var key = Console.ReadKey(true).Key;
             switch (key)
             {
                 case ConsoleKey.UpArrow:
                 {
-                    picker.OnUpArrowPressed();
+                    menu.OptionPicker.OnUpArrowPressed();
                     break;
                 }
                 case ConsoleKey.DownArrow:
                 {
-                    picker.OnDownArrowPressed();
+                    menu.OptionPicker.OnDownArrowPressed();
                     break;
                 }
                 case ConsoleKey.Enter:
                 {
-                    menu.Confirm(picker.PickedOption);
+                    menu.Confirm();
                     onConfirm?.Invoke();
                     if (infinite)
                     {
