@@ -62,7 +62,13 @@ Only one NuGet dependency is used:
       - ScoreboardStore.cs — Saves and retrieves game scores
 
     - #### MenuCore/
-      - (Add class descriptions here if any files exist inside this folder.)
+      - Menu.cs - Abstract class for implementing any kind of menu
+      - MenuOptionPicker - Tracks the selected option in the menu
+      - #### Options/
+        - MenuOption.cs - Abstract class for implementing menu options
+        - The remaining items in this folder are implementations of MenuOption
+      - #### Implementations/
+        - Implementations of the Menu class
 
     - #### 📁 Models/
       - Card.cs — Represents a single playing card (suit, rank, etc.). 
