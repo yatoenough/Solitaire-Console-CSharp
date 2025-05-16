@@ -4,18 +4,24 @@ namespace Solitaire.MenuCore;
 
 public abstract class Menu
 {
-    public abstract List<MenuOption> Options { get; }
-    
-    protected MenuOptionPicker OptionPicker;
+    protected abstract List<MenuOption> Options { get; }
 
-    public Menu()
+    private MenuOptionPicker OptionPicker;
+
+    protected Menu()
     {
         OptionPicker = new MenuOptionPicker(Options.Count);
     }
 
-    public abstract void Display();
+    protected abstract void DisplayMenu();
 
-    public void DisplayOptions()
+    private void Display()
+    {
+        DisplayMenu();
+        DisplayOptions();
+    }
+
+    private void DisplayOptions()
     {
         for (int i = 0; i < Options.Count; i++)
         {
@@ -25,12 +31,12 @@ public abstract class Menu
         }
     }
 
-    public void Confirm()
+    private void Confirm()
     {
         Options[OptionPicker.PickedOption].Execute();
     }
 
-    public static void HandleSubMenuInteraction(Menu menu, Action? onConfirm = null, bool infinite = false)
+    public static void Handle(Menu menu, Action? onConfirm = null, bool infinite = false)
     {
         while (true)
         {

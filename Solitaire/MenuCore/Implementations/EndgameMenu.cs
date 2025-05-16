@@ -7,16 +7,15 @@ namespace Solitaire.MenuCore.Implementations;
 
 public class EndgameMenu(int moveCount) : Menu
 {
-    public override List<MenuOption> Options { get; } = [
+    protected override List<MenuOption> Options { get; } = [
         new StartGameMenuOption(GameStrings.restart_label),
         new BackToMainMenuOption()
     ];
-    
-    public override void Display()
+
+    protected override void DisplayMenu()
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.win_label));
-        Console.WriteLine($"{GameStrings.move_count_label} {moveCount}\n");
         
-        DisplayOptions();
+        Console.WriteLine($"{GameStrings.move_count_label} {moveCount}\n");
     }
 }

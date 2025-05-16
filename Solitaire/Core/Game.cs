@@ -28,7 +28,7 @@ public class Game
             Console.Clear();
             if (CheckIfWin())
             {
-                Menu.HandleSubMenuInteraction(new EndgameMenu(moveManager.MoveCount));
+                Menu.Handle(new EndgameMenu(moveManager.MoveCount));
                 return;
             }
             renderer.Render(state);
@@ -39,12 +39,12 @@ public class Game
             {
                 case ConsoleKey.Q:
                 {
-                    Menu.HandleSubMenuInteraction(new QuitConfirmationMenu());
+                    Menu.Handle(new QuitConfirmationMenu());
                     break;
                 }
                 case ConsoleKey.R:
                 {
-                    Menu.HandleSubMenuInteraction(new RestartMenu());
+                    Menu.Handle(new RestartMenu());
                     break;
                 }
             }

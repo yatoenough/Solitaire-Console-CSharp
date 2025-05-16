@@ -12,6 +12,6 @@ public class LanguageMenuOption : MenuOption
 
     public override void Execute()
     {
-        Menu.HandleSubMenuInteraction(new LanguageMenu());
+        Menu.Handle(new LanguageMenu());
     }
 }

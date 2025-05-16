@@ -7,18 +7,16 @@ namespace Solitaire.MenuCore.Implementations;
 
 public class MainMenu : Menu
 {
-    public override List<MenuOption> Options { get; } = [
+    protected override List<MenuOption> Options { get; } = [
         new StartGameMenuOption(),
         new LanguageMenuOption(),
         new QuitMenuOption()
     ];
 
-    public override void Display()
+    protected override void DisplayMenu()
     {
         Console.WriteLine(FiggleFonts.Slant.Render(GameStrings.app_name));
         
         Console.WriteLine($"{GameStrings.createdby} [https://github.com/yatoenough]");
-
-        DisplayOptions();
     }
 }

@@ -7,15 +7,13 @@ namespace Solitaire.MenuCore.Implementations;
 
 public class LanguageMenu : Menu
 {
-    public override List<MenuOption> Options { get; } = [
+    protected override List<MenuOption> Options { get; } = [
         new EnglishMenuOption(),
         new PolishMenuOption()
     ];
 
-    public override void Display()
+    protected override void DisplayMenu()
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.language_label));
-        
-        DisplayOptions();
     }
 }

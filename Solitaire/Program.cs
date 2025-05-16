@@ -16,6 +16,6 @@ internal static class Program
     
     private static void Main()
     {
-        Menu.HandleSubMenuInteraction(new MainMenu(), infinite: true);
+        Menu.Handle(new MainMenu(), infinite: true);
     }
 }

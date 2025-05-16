@@ -6,16 +6,14 @@ namespace Solitaire.MenuCore.Implementations;
 
 public class RestartMenu : Menu
 {
-    public override List<MenuOption> Options { get; } =
+    protected override List<MenuOption> Options { get; } =
     [
         new StartGameMenuOption(GameStrings.restart_label),
         new EmptyMenuOption(GameStrings.dontrestart_label)
     ];
-    
-    public override void Display()
+
+    protected override void DisplayMenu()
     {
         Console.WriteLine($"{GameStrings.restart_confirmation_label}\n");
-        
-        DisplayOptions();
     }
 }

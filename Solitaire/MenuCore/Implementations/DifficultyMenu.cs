@@ -7,15 +7,13 @@ namespace Solitaire.MenuCore.Implementations;
 
 public class DifficultyMenu : Menu
 {
-    public override List<MenuOption> Options { get; } = [
+    protected override List<MenuOption> Options { get; } = [
         new EasyDifficultyMenuOption(),
         new HardDifficultyMenuOption()
     ];
-    
-    public override void Display()
+
+    protected override void DisplayMenu()
     {
         Console.WriteLine(FiggleFonts.Standard.Render(GameStrings.difficulty_label));
-        
-        DisplayOptions();
     }
 }

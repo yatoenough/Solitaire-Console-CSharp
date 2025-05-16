@@ -6,16 +6,14 @@ namespace Solitaire.MenuCore.Implementations;
 
 public class QuitConfirmationMenu : Menu
 {
-    public override List<MenuOption> Options { get; } =
+    protected override List<MenuOption> Options { get; } =
     [
         new QuitMenuOption(),
         new EmptyMenuOption(GameStrings.option_dontquit)
     ];
-    
-    public override void Display()
+
+    protected override void DisplayMenu()
     {
         Console.WriteLine($"{GameStrings.quit_confirmation_label}\n");
-        
-        DisplayOptions();
     }
 }
