@@ -129,7 +129,7 @@ public class Game
                 EnterRangeSelection();
                 break;
             case ConsoleKey.B:
-                moveManager.UndoLastMove();
+                UndoMove();
                 break;
         }
     }
@@ -183,6 +183,11 @@ public class Game
                 state.PickedFromWaste = false;
             }
         }
+    }
+
+    private void UndoMove() {
+        PutCardBack();
+        moveManager.UndoLastMove();
     }
 
     private void PickCardFromWaste()
