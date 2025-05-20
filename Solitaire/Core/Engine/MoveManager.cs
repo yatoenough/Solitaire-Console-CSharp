@@ -26,6 +26,7 @@ public class MoveManager(DeckManager deckManager, List<Column> columns, List<Sta
 
         var lastMove = moveHistory.Pop();
         UndoMove(lastMove);
+        MoveCount--;
     }
 
     private void UndoMove(Move move)
